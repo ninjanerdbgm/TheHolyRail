@@ -43,7 +43,7 @@ public class TheHolyRail {
         Recipes.registerModRecipe(new Recipe(
                 "railrunner",
                 1,
-                RecipeTechRegistry.ADVANCED_WORKSTATION,
+                RecipeTechRegistry.DEMONIC,
                 new Ingredient[]{
                         new Ingredient("tungstenbar", 5),
                         new Ingredient("goldbar", 3),
