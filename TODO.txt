@@ -1,0 +1,3 @@
+- Another minecart with higher top speed <DONE>
+- Allow players to choose whether or not empty minecarts are detected by powered rails (wrench on rail)
+- Add trap minecarts

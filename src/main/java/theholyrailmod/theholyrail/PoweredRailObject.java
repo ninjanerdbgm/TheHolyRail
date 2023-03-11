@@ -81,6 +81,11 @@ public class PoweredRailObject extends MinecartTrackObject {
    // rotation == 3 // left
      
    public PoweredRailObject.TrackSprite getPoweredRailSprite(Level level, int tileX, int tileY, int rotation) {
+      boolean alternateSprite;
+      synchronized(this.drawRandom) {
+         alternateSprite = this.drawRandom.seeded(this.getTileSeed(tileX, tileY)).nextBoolean();
+      }
+
       PoweredRailObject.TrackSprite out = new PoweredRailObject.TrackSprite();
       boolean adjTop = Arrays.stream(this.railIds).anyMatch(level.getObject(tileX, tileY - 1).getStringID()::equals);
       boolean adjRight = Arrays.stream(this.railIds).anyMatch(level.getObject(tileX + 1, tileY).getStringID()::equals);
@@ -110,7 +115,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedDown = false;
             }
 
-            return out.sprite(1, 0);
+            return out.sprite(4, 0);
          } else if (adjLeft) {
             if (adjBot) {
                out.goingUp();
@@ -120,7 +125,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedUp = false;
                }
 
-               return out.sprite(1, 0);
+               return out.sprite(3, 3);
             } else {
                out.goingUp();
                out.goingLeft();
@@ -128,7 +133,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedUp = false;
                }
 
-               return out.sprite(1, 0);
+               return out.sprite(3, 1);
             }
          } else if (adjRight) {
             if (adjBot) {
@@ -139,7 +144,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedUp = false;
                }
 
-               return out.sprite(1, 0);
+               return out.sprite(2, 3);
             } else {
                out.goingUp();
                out.goingRight();
@@ -147,7 +152,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedUp = false;
                }
 
-               return out.sprite(1, 0);
+               return out.sprite(2, 1);
             }
          } else {
             out.goingUp();
@@ -160,7 +165,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedDown = false;
             }
 
-            return out.sprite(1, 0);
+            return out.sprite(1, alternateSprite ? 1 : 0);
          }
       } else if (rotation == 1) {
          if (adjTop) {
@@ -186,7 +191,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedRight = false;
             }
 
-            return out.sprite(0, 0);
+            return out.sprite(4, 1);
          } else if (adjTop) {
             if (adjLeft) {
                out.goingUp();
@@ -196,7 +201,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedRight = false;
                }
 
-               return out.sprite(0, 0);
+               return out.sprite(0, 3);
             } else {
                out.goingUp();
                out.goingRight();
@@ -204,7 +209,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedRight = false;
                }
 
-               return out.sprite(0, 0);
+               return out.sprite(2, 1);
             }
          } else if (adjBot) {
             if (adjLeft) {
@@ -215,7 +220,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedRight = false;
                }
 
-               return out.sprite(0, 0);
+               return out.sprite(0, 2);
             } else {
                out.goingRight();
                out.goingDown();
@@ -223,7 +228,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedRight = false;
                }
 
-               return out.sprite(0, 0);
+               return out.sprite(2, 0);
             }
          } else {
             out.goingRight();
@@ -236,7 +241,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedRight = false;
             }
 
-            return out.sprite(0, 0);
+            return out.sprite(0, alternateSprite ? 1 : 0);
          }
       } else if (rotation == 2) {
          if (adjLeft) {
@@ -262,7 +267,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedDown = false;
             }
 
-            return out.sprite(1, 1);
+            return out.sprite(4, 2);
          } else if (adjLeft) {
             if (adjTop) {
                out.goingUp();
@@ -272,7 +277,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedDown = false;
                }
 
-               return out.sprite(1, 1);
+               return out.sprite(3,2);
             } else {
                out.goingDown();
                out.goingLeft();
@@ -280,7 +285,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedDown = false;
                }
 
-               return out.sprite(1, 1);
+               return out.sprite(3, 0);
             }
          } else if (adjRight) {
             if (adjTop) {
@@ -291,7 +296,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedDown = false;
                }
 
-               return out.sprite(1, 1);
+               return out.sprite(2, 2);
             } else {
                out.goingRight();
                out.goingDown();
@@ -299,7 +304,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedDown = false;
                }
 
-               return out.sprite(1, 1);
+               return out.sprite(2, 0);
             }
          } else {
             out.goingUp();
@@ -312,7 +317,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedDown = false;
             }
 
-            return out.sprite(1, 1);
+            return out.sprite(1, alternateSprite ? 1 : 0);
          }
       } else {
          if (adjTop) {
@@ -338,7 +343,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedRight = false;
             }
 
-            return out.sprite(0, 1);
+            return out.sprite(4, 3);
          } else if (adjTop) {
             if (adjRight) {
                out.goingUp();
@@ -348,7 +353,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedLeft = false;
                }
 
-               return out.sprite(0, 1);
+               return out.sprite(1, 3);
             } else {
                out.goingUp();
                out.goingLeft();
@@ -356,7 +361,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedLeft = false;
                }
 
-               return out.sprite(0, 1);
+               return out.sprite(3, 1);
             }
          } else if (adjBot) {
             if (adjRight) {
@@ -367,7 +372,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedLeft = false;
                }
 
-               return out.sprite(0, 1);
+               return out.sprite(1, 2);
             } else {
                out.goingDown();
                out.goingLeft();
@@ -375,7 +380,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedLeft = false;
                }
 
-               return out.sprite(0, 1);
+               return out.sprite(3, 0);
             }
          } else {
             out.goingRight();
@@ -388,7 +393,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedRight = false;
             }
 
-            return out.sprite(0, 1);
+            return out.sprite(1, alternateSprite ? 1 : 0);
          }
       }
    }
@@ -442,6 +447,45 @@ public class PoweredRailObject extends MinecartTrackObject {
       }
 
       tileList.add(tm -> options.draw());
+   }
+
+   
+
+   @Override
+   public void drawPreview(Level level, int tileX, int tileY, int rotation, float alpha, PlayerMob player, GameCamera camera) {
+      int drawX = camera.getTileDrawX(tileX);
+      int drawY = camera.getTileDrawY(tileY);
+      PoweredRailObject.TrackSprite sprite = this.getPoweredRailSprite(level, tileX, tileY, rotation);
+      if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
+         if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
+            && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
+            this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
+         }
+
+         this.supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
+      }
+
+      if (this.isPowered(level, tileX, tileY)) {
+         this.poweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
+      } else {         
+         this.unpoweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
+      }
+
+      if (sprite.goingUp && !sprite.connectedUp) {
+         this.endingTexture.initDraw().sprite(0, 0, 32).alpha(alpha).draw(drawX, drawY);
+      }
+
+      if (sprite.goingRight && !sprite.connectedRight) {
+         this.endingTexture.initDraw().sprite(0, 1, 32).alpha(alpha).draw(drawX, drawY);
+      }
+
+      if (sprite.goingDown && !sprite.connectedDown) {
+         this.endingTexture.initDraw().sprite(0, 2, 32).alpha(alpha).draw(drawX, drawY);
+      }
+
+      if (sprite.goingLeft && !sprite.connectedLeft) {
+         this.endingTexture.initDraw().sprite(0, 3, 32).alpha(alpha).draw(drawX, drawY);
+      }
    }
 
    public static int registerPoweredRail() {
