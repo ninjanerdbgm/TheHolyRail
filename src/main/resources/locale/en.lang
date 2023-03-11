@@ -1,2 +1,11 @@
+[item]
+railrunner=Track Torpedo
+
+[itemtooltip]
+railrunnertip=It's a rocket-powered minecart!\nPlace on a track to really see it shine.
+
+[mob]
+railrunnermob=Track Torpedo
+
 [object]
-poweredrail=Powered Rail
+poweredrail=Powered Track
