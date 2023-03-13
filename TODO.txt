@@ -1,3 +1,4 @@
 - Another minecart with higher top speed <DONE>
+- Chest minecart
 - Allow players to choose whether or not empty minecarts are detected by powered rails (wrench on rail)
 - Add trap minecarts

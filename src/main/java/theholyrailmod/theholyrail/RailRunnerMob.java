@@ -19,6 +19,7 @@ import necesse.entity.mobs.summon.MinecartMob;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.DrawOptions;
 import necesse.gfx.drawables.OrderableDrawables;
+import necesse.gfx.gameTexture.GameTexture;
 import necesse.inventory.lootTable.LootTable;
 import necesse.inventory.lootTable.lootItem.LootItem;
 import necesse.level.gameObject.GameObject;
@@ -28,6 +29,7 @@ import necesse.level.maps.light.GameLight;
 
 public class RailRunnerMob extends MinecartMob {
    public static LootTable lootTable = new LootTable(new LootItem("railrunner"));
+   public static GameTexture texture;
    public float collisionMovementBuffer;
    public Point collisionMovementLastPos;
    public float railRunnerSpeed;
@@ -87,9 +89,9 @@ public class RailRunnerMob extends MinecartMob {
 
       drawY += getBobbing(x, y);
       drawY += getLevel().getTile(getTileX(), getTileY()).getMobSinkingAmount(this);
-      final DrawOptions behind = MobRegistry.Textures.fromFile("railrunner").initDraw().sprite(sprite.x, sprite.y, 64).light(light).pos(drawX, drawY);
+      final DrawOptions behind = texture.initDraw().sprite(sprite.x, sprite.y, 64).light(light).pos(drawX, drawY);
 
-      DrawOptions drawOptions = MobRegistry.Textures.fromFile("railrunner").initDraw()
+      DrawOptions drawOptions = texture.initDraw()
                .sprite(sprite.x, sprite.y, 64)
                .light(light)
                .pos(drawX, drawY);
@@ -138,7 +140,7 @@ public class RailRunnerMob extends MinecartMob {
                Point sprite = mob.getAnimSprite((int)pos.x, (int)pos.y, pos.dir);
                drawY += mob.getBobbing((int)pos.x, (int)pos.y);
                drawY += level.getTile((int)pos.x / 32, (int)pos.y / 32).getMobSinkingAmount(mob);
-               MobRegistry.Textures.fromFile("railrunner").initDraw().sprite(sprite.x, sprite.y, 64).alpha(0.5F).draw(drawX, drawY);
+               texture.initDraw().sprite(sprite.x, sprite.y, 64).alpha(0.5F).draw(drawX, drawY);
                return;
             }
          }
@@ -147,7 +149,7 @@ public class RailRunnerMob extends MinecartMob {
       int drawX = camera.getDrawX(levelX) - 32;
       int drawY = camera.getDrawY(levelY) - 47;
       drawY += level.getLevelTile(levelX / 32, levelY / 32).getLiquidBobbing();
-      MobRegistry.Textures.fromFile("railrunner").initDraw().sprite(0, dir, 64).alpha(0.5F).draw(drawX, drawY);
+      texture.initDraw().sprite(0, dir, 64).alpha(0.5F).draw(drawX, drawY);
    }
 
    public static int registerRailRunnerMob() {            

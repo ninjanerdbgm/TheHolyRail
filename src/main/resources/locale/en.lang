@@ -1,11 +1,18 @@
 [item]
 railrunner=Track Torpedo
+chestminecart=Chest Minecart
 
 [itemtooltip]
 railrunnertip=It's a rocket-powered minecart!\nPlace on a track to really see it shine.
+chestminecarttip=Store items in the chest and send\nthem on their way!
 
 [mob]
 railrunnermob=Track Torpedo
+chestminecartmob=Chest Minecart
 
 [object]
 poweredrail=Powered Track
+
+[ui]
+chestminecartstorage=Chest Minecart Items
+chestminecartsort=Sort Items
