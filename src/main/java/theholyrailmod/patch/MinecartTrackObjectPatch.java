@@ -1,4 +1,5 @@
 package theholyrailmod.patch;
+
 import java.util.Arrays;
 
 import necesse.engine.modLoader.annotations.ModMethodPatch;
@@ -10,23 +11,27 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner.Typing;
 
 public class MinecartTrackObjectPatch {
-    @ModMethodPatch(target = MinecartTrackObject.class, name = "getMinecartLines", arguments = {Level.class, int.class, int.class, float.class, float.class})
+    @ModMethodPatch(target = MinecartTrackObject.class, name = "getMinecartLines", arguments = { Level.class, int.class,
+            int.class, float.class, float.class })
     public static class AddHolyRailInteroperability {
         @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
-        public static MinecartLines onEnter(@Advice.This MinecartTrackObject obj, @Advice.Argument(0) Level level, @Advice.Argument(1) int x, @Advice.Argument(2) int y, @Advice.Argument(3) float entityDx, @Advice.Argument(4) float entityDy) {        
+        public static MinecartLines onEnter(@Advice.This MinecartTrackObject obj, @Advice.Argument(0) Level level,
+                @Advice.Argument(1) int x, @Advice.Argument(2) int y, @Advice.Argument(3) float entityDx,
+                @Advice.Argument(4) float entityDy) {
             return getMinecartLines(obj, level, x, y, entityDx, entityDy);
         }
 
         @Advice.OnMethodExit
-        public static void onExit(@Advice.Return(readOnly = false, typing = Typing.DYNAMIC) Object returned, @Advice.Enter Object enter) {
+        public static void onExit(@Advice.Return(readOnly = false, typing = Typing.DYNAMIC) Object returned,
+                @Advice.Enter Object enter) {
             if (enter != null) {
                 returned = enter;
             }
         }
 
-        public static MinecartLines getMinecartLines(MinecartTrackObject obj, Level level, int x, int y, float entityDx, float entityDy)
-        {
-            String[] railIds = new String[] {"minecarttrack", "poweredrail"};
+        public static MinecartLines getMinecartLines(MinecartTrackObject obj, Level level, int x, int y, float entityDx,
+                float entityDy) {
+            String[] railIds = new String[] { "minecarttrack", "poweredrail", "stationtrack" };
 
             MinecartLines lines = new MinecartLines(x, y);
             byte rotation = level.getObjectRotation(x, y);
@@ -34,7 +39,7 @@ public class MinecartTrackObjectPatch {
             boolean hasDown = Arrays.stream(railIds).anyMatch(level.getObject(x, y + 1).getStringID()::equals);
             boolean hasLeft = Arrays.stream(railIds).anyMatch(level.getObject(x - 1, y).getStringID()::equals);
             boolean hasRight = Arrays.stream(railIds).anyMatch(level.getObject(x + 1, y).getStringID()::equals);
-            
+
             float turnThreshold = 0.2F;
             if (rotation != 0 && rotation != 2) {
                 boolean straightAcross = false;
@@ -42,42 +47,44 @@ public class MinecartTrackObjectPatch {
                 if (hasUp) {
                     byte upRotation = level.getObjectRotation(x, y - 1);
                     if (upRotation == 0 || upRotation == 2) {
-                    boolean success = true;
-                    if (hasDown) {
-                        byte downRotation = level.getObjectRotation(x, y + 1);
-                        if (downRotation == 0 || downRotation == 2) {
-                            success = false;
+                        boolean success = true;
+                        if (hasDown) {
+                            byte downRotation = level.getObjectRotation(x, y + 1);
+                            if (downRotation == 0 || downRotation == 2) {
+                                success = false;
+                            }
                         }
-                    }
 
-                    if (success) {
-                        lines.up = MinecartLine.up(x, y);
-                        lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy).down;
-                        anyConnectionFromSides = true;
-                    } else {
-                        straightAcross = true;
-                    }
+                        if (success) {
+                            lines.up = MinecartLine.up(x, y);
+                            lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx,
+                                    entityDy).down;
+                            anyConnectionFromSides = true;
+                        } else {
+                            straightAcross = true;
+                        }
                     }
                 }
 
                 if (hasDown) {
                     byte downRotation = level.getObjectRotation(x, y + 1);
                     if (downRotation == 0 || downRotation == 2) {
-                    boolean success = true;
-                    if (hasUp) {
-                        byte upRotation = level.getObjectRotation(x, y - 1);
-                        if (upRotation == 0 || upRotation == 2) {
-                            success = false;
+                        boolean success = true;
+                        if (hasUp) {
+                            byte upRotation = level.getObjectRotation(x, y - 1);
+                            if (upRotation == 0 || upRotation == 2) {
+                                success = false;
+                            }
                         }
-                    }
 
-                    if (success) {
-                        lines.down = MinecartLine.down(x, y);
-                        lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy).up;
-                        anyConnectionFromSides = true;
-                    } else {
-                        straightAcross = true;
-                    }
+                        if (success) {
+                            lines.down = MinecartLine.down(x, y);
+                            lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx,
+                                    entityDy).up;
+                            anyConnectionFromSides = true;
+                        } else {
+                            straightAcross = true;
+                        }
                     }
                 }
 
@@ -112,32 +119,32 @@ public class MinecartTrackObjectPatch {
                 } else if (lines.down != null) {
                     lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy).up;
                     if (rotation == 1) {
-                    if (lines.left == null || entityDy > turnThreshold) {
-                        lines.right.nextNegative = () -> lines.down;
-                    }
+                        if (lines.left == null || entityDy > turnThreshold) {
+                            lines.right.nextNegative = () -> lines.down;
+                        }
 
-                    lines.down.nextNegative = () -> lines.right;
+                        lines.down.nextNegative = () -> lines.right;
                     } else {
-                    if ((lines.right == null || entityDy > turnThreshold) && lines.left != null) {
-                        lines.left.nextPositive = () -> lines.down;
-                    }
+                        if ((lines.right == null || entityDy > turnThreshold) && lines.left != null) {
+                            lines.left.nextPositive = () -> lines.down;
+                        }
 
-                    lines.down.nextNegative = () -> lines.left;
+                        lines.down.nextNegative = () -> lines.left;
                     }
                 } else if (lines.up != null) {
                     lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy).down;
                     if (rotation == 1) {
-                    if (lines.left == null || entityDy < -turnThreshold) {
-                        lines.right.nextNegative = () -> lines.up;
-                    }
+                        if (lines.left == null || entityDy < -turnThreshold) {
+                            lines.right.nextNegative = () -> lines.up;
+                        }
 
-                    lines.up.nextPositive = () -> lines.right;
+                        lines.up.nextPositive = () -> lines.right;
                     } else {
-                    if ((lines.right == null || entityDy < -turnThreshold) && lines.left != null) {
-                        lines.left.nextPositive = () -> lines.up;
-                    }
+                        if ((lines.right == null || entityDy < -turnThreshold) && lines.left != null) {
+                            lines.left.nextPositive = () -> lines.up;
+                        }
 
-                    lines.up.nextPositive = () -> lines.left;
+                        lines.up.nextPositive = () -> lines.left;
                     }
                 }
             } else {
@@ -146,42 +153,44 @@ public class MinecartTrackObjectPatch {
                 if (hasLeft) {
                     byte leftRotation = level.getObjectRotation(x - 1, y);
                     if (leftRotation == 1 || leftRotation == 3) {
-                    boolean success = true;
-                    if (hasRight) {
-                        byte rightRotation = level.getObjectRotation(x + 1, y);
-                        if (rightRotation == 1 || rightRotation == 3) {
-                            success = false;
+                        boolean success = true;
+                        if (hasRight) {
+                            byte rightRotation = level.getObjectRotation(x + 1, y);
+                            if (rightRotation == 1 || rightRotation == 3) {
+                                success = false;
+                            }
                         }
-                    }
 
-                    if (success) {
-                        lines.left = MinecartLine.left(x, y);
-                        lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy).right;
-                        anyConnectionFromSides = true;
-                    } else {
-                        straightAcross = true;
-                    }
+                        if (success) {
+                            lines.left = MinecartLine.left(x, y);
+                            lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx,
+                                    entityDy).right;
+                            anyConnectionFromSides = true;
+                        } else {
+                            straightAcross = true;
+                        }
                     }
                 }
 
                 if (hasRight) {
                     byte rightRotation = level.getObjectRotation(x + 1, y);
                     if (rightRotation == 1 || rightRotation == 3) {
-                    boolean success = true;
-                    if (hasLeft) {
-                        byte leftRotation = level.getObjectRotation(x - 1, y);
-                        if (leftRotation == 1 || leftRotation == 3) {
-                            success = false;
+                        boolean success = true;
+                        if (hasLeft) {
+                            byte leftRotation = level.getObjectRotation(x - 1, y);
+                            if (leftRotation == 1 || leftRotation == 3) {
+                                success = false;
+                            }
                         }
-                    }
 
-                    if (success) {
-                        lines.right = MinecartLine.right(x, y);
-                        lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy).left;
-                        anyConnectionFromSides = true;
-                    } else {
-                        straightAcross = true;
-                    }
+                        if (success) {
+                            lines.right = MinecartLine.right(x, y);
+                            lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx,
+                                    entityDy).left;
+                            anyConnectionFromSides = true;
+                        } else {
+                            straightAcross = true;
+                        }
                     }
                 }
 
@@ -216,32 +225,32 @@ public class MinecartTrackObjectPatch {
                 } else if (lines.right != null) {
                     lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy).left;
                     if (rotation == 2) {
-                    if (lines.up == null || entityDx > turnThreshold) {
-                        lines.down.nextNegative = () -> lines.right;
-                    }
+                        if (lines.up == null || entityDx > turnThreshold) {
+                            lines.down.nextNegative = () -> lines.right;
+                        }
 
-                    lines.right.nextNegative = () -> lines.down;
+                        lines.right.nextNegative = () -> lines.down;
                     } else {
-                    if ((lines.down == null || entityDx > turnThreshold) && lines.up != null) {
-                        lines.up.nextPositive = () -> lines.right;
-                    }
+                        if ((lines.down == null || entityDx > turnThreshold) && lines.up != null) {
+                            lines.up.nextPositive = () -> lines.right;
+                        }
 
-                    lines.right.nextNegative = () -> lines.up;
+                        lines.right.nextNegative = () -> lines.up;
                     }
                 } else if (lines.left != null) {
                     lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy).right;
                     if (rotation == 2) {
-                    if (lines.up == null || entityDx < -turnThreshold) {
-                        lines.down.nextNegative = () -> lines.left;
-                    }
+                        if (lines.up == null || entityDx < -turnThreshold) {
+                            lines.down.nextNegative = () -> lines.left;
+                        }
 
-                    lines.left.nextPositive = () -> lines.down;
+                        lines.left.nextPositive = () -> lines.down;
                     } else {
-                    if ((lines.down == null || entityDx < -turnThreshold) && lines.up != null) {
-                        lines.up.nextPositive = () -> lines.left;
-                    }
+                        if ((lines.down == null || entityDx < -turnThreshold) && lines.up != null) {
+                            lines.up.nextPositive = () -> lines.left;
+                        }
 
-                    lines.left.nextPositive = () -> lines.up;
+                        lines.left.nextPositive = () -> lines.up;
                     }
                 }
             }
@@ -250,6 +259,3 @@ public class MinecartTrackObjectPatch {
         }
     }
 }
-
-
-

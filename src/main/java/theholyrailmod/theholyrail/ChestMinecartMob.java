@@ -1,8 +1,12 @@
 package theholyrailmod.theholyrail;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import necesse.engine.GameEvents;
+import necesse.engine.events.loot.MobLootTableDropsEvent;
 import necesse.engine.localization.Localization;
 import necesse.engine.network.Packet;
 import necesse.engine.network.PacketReader;
@@ -16,12 +20,16 @@ import necesse.engine.save.SaveData;
 import necesse.engine.save.levelData.InventorySave;
 import necesse.engine.sound.SoundPlayer;
 import necesse.engine.tickManager.TickManager;
+import necesse.engine.util.GameRandom;
+import necesse.entity.mobs.Attacker;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.MobDrawable;
+import necesse.entity.mobs.MobInventory;
 import necesse.entity.mobs.PlayerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
 import necesse.entity.mobs.summon.MinecartLines;
 import necesse.entity.mobs.summon.MinecartMob;
+import necesse.entity.pickup.ItemPickupEntity;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.DrawOptions;
 import necesse.gfx.drawables.OrderableDrawables;
@@ -36,7 +44,7 @@ import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
 import theholyrailmod.container.ChestMinecartContainer;
 
-public class ChestMinecartMob extends MinecartMob {
+public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public static LootTable lootTable = new LootTable(new LootItem("chestminecart"));
    public static GameTexture texture;
    public float collisionMovementBuffer;
@@ -44,6 +52,7 @@ public class ChestMinecartMob extends MinecartMob {
    public float chestMinecartSpeed;
    public int chestMinecartDir;
    public boolean isOpened;
+   public boolean isMakingStop;
    protected SoundPlayer movingSound;
    protected SoundPlayer breakingSound;
    protected float breakParticleBuffer;
@@ -54,7 +63,6 @@ public class ChestMinecartMob extends MinecartMob {
       setSpeed(210.0F);
       setFriction(3.2F);
       this.accelerationMod = 0.08F;
-      this.isOpened = false;
    }
 
    @Override
@@ -96,12 +104,24 @@ public class ChestMinecartMob extends MinecartMob {
    @Override
    public LootTable getLootTable() {
       return lootTable;
-      // ArrayList<InventoryItem> mobDrop =
-      // lootTable.getNewList(GameRandom.globalRandom, this);
-      // LootTable table = this.boxObject.getLootTable(getLevel(), attackCooldown,
-      // DEFAULT_RESPAWN_TIME);
-      // table.addItems(mobDrop, GameRandom.globalRandom, this);
-      // return table;
+   }
+
+   @Override
+   public void serverTick() {
+      super.serverTick();
+      this.serverTickInventorySync(this.getLevel().getServer(), (Mob) this);
+   }
+
+   @Override
+   public void setupSpawnPacket(PacketWriter writer) {
+      super.setupSpawnPacket(writer);
+      this.itemInventory.writeContent(writer);
+   }
+
+   @Override
+   public void applySpawnPacket(PacketReader reader) {
+      super.applySpawnPacket(reader);
+      this.itemInventory.override(Inventory.getInventory(reader), hasArrivedAtTarget, hasArrivedAtTarget);
    }
 
    @Override
@@ -140,6 +160,32 @@ public class ChestMinecartMob extends MinecartMob {
       });
 
       addShadowDrawables(tileList, x, y, light, camera);
+   }
+
+   @Override
+   public void onDeath(Attacker attacker, HashSet<Attacker> attackers) {
+      super.onDeath(attacker, attackers);
+
+      ArrayList<InventoryItem> containedItems = new ArrayList<InventoryItem>();
+      for (int i = 0; i < this.itemInventory.getSize(); ++i) {
+         containedItems.add(this.itemInventory.getItem(i));
+      }
+
+      MobLootTableDropsEvent dropEvent;
+      ArrayList<InventoryItem> drops = this.getLootTable().getNewList(GameRandom.globalRandom, this);
+      Point publicLootPosition = this.getLootDropsPosition(null);
+      GameEvents.triggerEvent(dropEvent = new MobLootTableDropsEvent(this, publicLootPosition, drops));
+      if (dropEvent.dropPos != null && dropEvent.drops != null) {
+         for (InventoryItem item : containedItems) {
+            if (item != null) {
+               ItemPickupEntity entity = item.getPickupEntity(this.getLevel(), (float) dropEvent.dropPos.x,
+                     (float) dropEvent.dropPos.y);
+               this.getLevel().entityManager.pickups.add(entity);
+            }
+         }
+         this.itemInventory.clearInventory();
+      }
+
    }
 
    public static void drawPlacePreview(Level level, int levelX, int levelY, int dir, GameCamera camera) {
@@ -195,12 +241,6 @@ public class ChestMinecartMob extends MinecartMob {
 
    @Override
    public void interact(PlayerMob player) {
-      System.out.println("Interacted with ChestMinecart");
-      System.out.println("Minecart inventory: ");
-      for (int i = 0; i < 20; ++i) {
-         System.out.println("Slot " + i + ": " + this.itemInventory.getItem(i));
-      }
-      this.isOpened = !this.isOpened;
       Level level = player.getLevel();
 
       if (level.isServerLevel() && player.isServerClient()) {
@@ -212,10 +252,7 @@ public class ChestMinecartMob extends MinecartMob {
       }
    }
 
-   public void sortItems() {
-      System.out.println("Sort items button pressed");
-   }
-
+   @Override
    public Inventory getInventory() {
       return this.itemInventory;
    }
@@ -242,15 +279,32 @@ public class ChestMinecartMob extends MinecartMob {
       return out;
    }
 
+   public void sortItems() {
+      this.itemInventory.sortItems(0, this.itemInventory.getSize() - 1);
+   }
+
    public ChestMinecartMob getMob() {
       return this;
    }
 
-   public boolean GetIsOpened() {
+   public boolean getIsOpened() {
       return this.isOpened;
+   }
+
+   public void setIsOpened(boolean opened) {
+      this.isOpened = opened;
+   }
+
+   public boolean getIsMakingStop() {
+      return this.isMakingStop;
+   }
+
+   public void setIsMakingStop(boolean stopping) {
+      this.isMakingStop = stopping;
    }
 
    public static int registerChestMinecartMob() {
       return MobRegistry.registerMob("chestminecartmob", ChestMinecartMob.class, false);
    }
+
 }

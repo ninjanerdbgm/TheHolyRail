@@ -12,10 +12,12 @@ import theholyrailmod.theholyrail.ChestMinecartMob;
 
 public class ChestMinecartContainerForm extends MobContainerFormSwitcher<ChestMinecartContainer> {
     public ChestMinecartInventoryForm itemForm;
+    public ChestMinecartMob mob;
 
     public ChestMinecartContainerForm(Client client, ChestMinecartContainer container) {
         super(client, container);
         container.containerForm = this;
+        mob = container.minecartMob;
 
         GameMessage storageTitle = new LocalMessage("ui", "chestminecartstorage");
 
@@ -31,11 +33,6 @@ public class ChestMinecartContainerForm extends MobContainerFormSwitcher<ChestMi
                 });
 
         this.makeCurrent(this.itemForm);
-    }
-
-    @Override
-    public void draw(TickManager tickManager, PlayerMob perspective, java.awt.Rectangle renderBox) {
-        super.draw(tickManager, perspective, renderBox);
     }
 
     @Override

@@ -10,6 +10,7 @@ import theholyrailmod.theholyrail.ChestMinecartMob;
 import theholyrailmod.theholyrail.PoweredRailObject;
 import theholyrailmod.theholyrail.RailRunnerMob;
 import theholyrailmod.theholyrail.RailRunnerMountItem;
+import theholyrailmod.theholyrail.StationTrackObject;
 import theholyrailmod.theholyrail.ChestMinecartMountItem;
 
 @ModEntry
@@ -29,6 +30,7 @@ public class TheHolyRail {
                 ChestMinecartContainer.registerChestMinecartContainer();
                 ChestMinecartMob.registerChestMinecartMob();
                 PoweredRailObject.registerPoweredRail();
+                StationTrackObject.registerStationTrack();
         }
 
         public void initResources() {
@@ -42,10 +44,21 @@ public class TheHolyRail {
                 Recipes.registerModRecipe(new Recipe(
                                 "poweredrail",
                                 5,
-                                RecipeTechRegistry.ADVANCED_WORKSTATION,
+                                RecipeTechRegistry.DEMONIC,
                                 new Ingredient[] {
                                                 new Ingredient("wire", 5),
                                                 new Ingredient("goldbar", 2),
+                                                new Ingredient("ironbar", 1),
+                                                new Ingredient("anylog", 1)
+                                }).showAfter("minecarttrack"));
+                // Station Track
+                Recipes.registerModRecipe(new Recipe(
+                                "stationtrack",
+                                4,
+                                RecipeTechRegistry.DEMONIC,
+                                new Ingredient[] {
+                                                new Ingredient("wire", 4),
+                                                new Ingredient("tungstenbar", 1),
                                                 new Ingredient("ironbar", 1),
                                                 new Ingredient("anylog", 1)
                                 }).showAfter("minecarttrack"));
@@ -56,10 +69,8 @@ public class TheHolyRail {
                                 1,
                                 RecipeTechRegistry.WORKSTATION,
                                 new Ingredient[] {
-                                                // DEBUG
-                                                new Ingredient("anylog", 1),
-                                // new Ingredient("minecart", 1),
-                                // new Ingredient("storagebox", 1),
+                                                new Ingredient("minecart", 1),
+                                                new Ingredient("storagebox", 1),
                                 }).showAfter("minecart"));
 
                 // Railrunner

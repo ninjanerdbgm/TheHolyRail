@@ -36,9 +36,9 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
     public ChestMinecartInventoryForm(Client client, Container container, String header,
             FormEventListener<FormInputEvent<FormButton>> backButtonPressed) {
         super(client, container);
-        FormFlow itemFlow = new FormFlow(2);
+        FormFlow itemFlow = new FormFlow(5);
         header = GameUtils.maxString(header, new FontOptions(20), this.itemForm.getWidth() - 10 - 32);
-        this.itemForm.addComponent(itemFlow.next(new FormLabel(header, new FontOptions(20), -1, 5, 5), 5));
+        this.itemForm.addComponent(itemFlow.next(new FormLabel(header, new FontOptions(20), -1, 8, 30), 5));
 
         ChestMinecartContainer cont = (ChestMinecartContainer) container;
         this.slots = new FormContainerSlot[cont.INVENTORY_END - cont.INVENTORY_START + 1];
@@ -58,12 +58,48 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
         FormContentIconButton sortButton = this.itemForm
                 .addComponent(
                         new FormContentIconButton(
-                                10, this.itemForm.getHeight() - 35, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                11, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
                                 Settings.UI.inventory_sort, new LocalMessage("ui", "chestminecartsort")));
         sortButton.onClicked(e -> {
-            this.getMob().sortItems();
+            cont.buttonSortInventory.runAndSend();
         });
-        sortButton.setCooldown(500);
+        sortButton.setCooldown(350);
+        itemFlow.next(5);
+
+        FormContentIconButton storeStackAll = this.itemForm
+                .addComponent(
+                        new FormContentIconButton(
+                                41, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                Settings.UI.inventory_quickstack_out,
+                                new LocalMessage("ui", "chestminecartstorestackall")));
+        storeStackAll.onClicked(e -> {
+            cont.buttonStoreStackAll.runAndSend();
+        });
+        storeStackAll.setCooldown(500);
+        itemFlow.next(5);
+
+        FormContentIconButton takeTakeAll = this.itemForm
+                .addComponent(
+                        new FormContentIconButton(
+                                71, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                Settings.UI.inventory_quickstack_in,
+                                new LocalMessage("ui", "chestminecarttaketakeall")));
+        takeTakeAll.onClicked(e -> {
+            cont.buttonTakeTakeAll.runAndSend();
+        });
+        takeTakeAll.setCooldown(500);
+        itemFlow.next(5);
+
+        FormContentIconButton takeAllItems = this.itemForm
+                .addComponent(
+                        new FormContentIconButton(
+                                101, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                Settings.UI.container_loot_all,
+                                new LocalMessage("ui", "chestminecarttakeallitems")));
+        takeAllItems.onClicked(e -> {
+            cont.buttonTakeAll.runAndSend();
+        });
+        takeAllItems.setCooldown(500);
     }
 
     public abstract ChestMinecartMob getMob();

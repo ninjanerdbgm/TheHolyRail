@@ -12,7 +12,11 @@ chestminecartmob=Chest Minecart
 
 [object]
 poweredrail=Powered Track
+stationtrack=Station Track
 
 [ui]
-chestminecartstorage=Chest Minecart Items
+chestminecartstorage=Chest Minecart
 chestminecartsort=Sort Items
+chestminecartstorestackall=Fill minecart stacks from inventory
+chestminecarttaketakeall=Fill inventory stacks from minecart
+chestminecarttakeallitems=Take all items from minecart
