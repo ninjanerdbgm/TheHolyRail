@@ -5,7 +5,6 @@ import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.summon.MinecartMob;
 import necesse.level.gameObject.GameObject;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.implementation.bytecode.assign.Assigner.Typing;
 import theholyrailmod.theholyrail.ChestMinecartMob;
 import theholyrailmod.theholyrail.PoweredRailObject;
 import theholyrailmod.theholyrail.RailRunnerMob;
@@ -14,162 +13,172 @@ import theholyrailmod.theholyrail.StationTrackObject;
 public class MinecartMobPatch {
     @ModMethodPatch(target = MinecartMob.class, name = "tickCollisionMovement", arguments = { float.class, Mob.class })
     public static class TickCollisionMovementPatch {
-        public static long stationedTime = -1L;
-        public static long lastStationLeft = -2L;
-        public static boolean isBeingStationed = false;
-
-        public static long MAX_STATION_WAIT_TIME = 5200L;
-        public static long STATION_COOLDOWN_TIME = 350L;
-
         @Advice.OnMethodEnter
-        public static void onEnter(@Advice.This MinecartMob obj,
-                @Advice.Argument(value = 0, typing = Typing.DYNAMIC, readOnly = false) float delta,
+        public static void onEnter(@Advice.This MinecartMob mobObject,
+                @Advice.Argument(0) float delta,
                 @Advice.Argument(1) Mob rider) {
-            int tileX = obj.getTileX();
-            int tileY = obj.getTileY();
-            GameObject object = obj.getLevel().getObject(tileX, tileY);
+            int tileX = mobObject.getTileX();
+            int tileY = mobObject.getTileY();
+            GameObject trackObject = mobObject.getLevel().getObject(tileX, tileY);
 
-            if (!(obj instanceof RailRunnerMob) && !(obj instanceof ChestMinecartMob)) {
-                if (object instanceof PoweredRailObject) {
-                    if (((PoweredRailObject) object).isPowered(obj.getLevel(), tileX, tileY) && rider != null) {
-                        obj.minecartSpeed = Math.min(200.0f, obj.minecartSpeed + 5.7f);
+            RailRunnerMob rrMob = mobObject instanceof RailRunnerMob ? (RailRunnerMob) mobObject : null;
+            ChestMinecartMob cmMob = mobObject instanceof ChestMinecartMob ? (ChestMinecartMob) mobObject : null;
+
+            if (!(mobObject instanceof RailRunnerMob) && !(mobObject instanceof ChestMinecartMob)) {
+                if (trackObject instanceof PoweredRailObject) {
+                    if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
+                            && rider != null) {
+                        mobObject.minecartSpeed = Math.min(200.0f,
+                                (mobObject.minecartSpeed + 5.7f) * delta / 250.0f
+                                        * mobObject.getAccelerationModifier());
                     } else if (rider == null) {
-                        obj.minecartSpeed = 0.0f;
+                        mobObject.minecartSpeed = 0.0f;
                     } else {
-                        obj.minecartSpeed = Math.min(0f,
-                                obj.minecartSpeed > 4f ? obj.minecartSpeed / 2.0f
-                                        : obj.minecartSpeed > 0f ? obj.minecartSpeed - 0.01f : 0f);
+                        mobObject.minecartSpeed = Math.min(0f,
+                                mobObject.minecartSpeed > 4f ? (mobObject.minecartSpeed / 2.0f) * delta / 250.0f
+                                        : mobObject.minecartSpeed > 0f
+                                                ? (mobObject.minecartSpeed - 0.01f) * delta / 250.0f
+                                                : 0f);
                     }
                 }
             } else {
                 // Powered Track
-                if (object instanceof PoweredRailObject) {
-                    if (obj instanceof RailRunnerMob) {
-                        if (((PoweredRailObject) object).isPowered(obj.getLevel(), tileX, tileY) && rider != null) {
-                            obj.minecartSpeed = Math.min(262.0f, obj.minecartSpeed + 9.2f);
+                if (trackObject instanceof PoweredRailObject) {
+                    if (mobObject instanceof RailRunnerMob) {
+                        if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
+                                && rider != null) {
+                            mobObject.minecartSpeed = Math.min(rrMob.MAX_SPEED,
+                                    (mobObject.minecartSpeed
+                                            + rrMob.BOOST_SPEED) * delta / 250.0f
+                                            * mobObject.getAccelerationModifier());
                         } else if (rider == null) {
-                            obj.minecartSpeed = 0.0f;
+                            mobObject.minecartSpeed = 0.0f;
                         } else {
-                            obj.minecartSpeed = Math.min(0f,
-                                    obj.minecartSpeed > 12f ? obj.minecartSpeed / 2.0f
-                                            : obj.minecartSpeed > 0f ? obj.minecartSpeed - 0.01f : 0f);
+                            mobObject.minecartSpeed = Math.max(0f,
+                                    mobObject.minecartSpeed > 12f ? (mobObject.minecartSpeed / 2.0f) * delta / 250.0f
+                                            : (mobObject.minecartSpeed - 0.1f) * delta / 250.0f);
                         }
-                    } else if (obj instanceof ChestMinecartMob) {
-                        isBeingStationed = false;
-                        if (((PoweredRailObject) object).isPowered(obj.getLevel(), tileX, tileY)) {
-                            obj.minecartSpeed = Math.min(215.0f, obj.minecartSpeed + 5.85f);
+                    } else if (mobObject instanceof ChestMinecartMob) {
+                        cmMob.setIsBeingStationed(false);
+                        if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)) {
+                            mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,
+                                    (mobObject.minecartSpeed
+                                            + cmMob.BOOST_SPEED) * delta / 250.0f
+                                            * mobObject.getAccelerationModifier());
                         } else {
-                            obj.minecartSpeed = Math.min(0f,
-                                    obj.minecartSpeed > 8f ? obj.minecartSpeed / 2.0f
-                                            : obj.minecartSpeed > 0f ? obj.minecartSpeed - 0.01f : 0f);
+                            mobObject.minecartSpeed = Math.max(0f,
+                                    mobObject.minecartSpeed > 8f ? (mobObject.minecartSpeed / 2.0f) * delta / 250.0f
+                                            : (mobObject.minecartSpeed - 0.1f) * delta / 250.0f);
                         }
                     }
                 }
 
                 // Station Track
-                if (object instanceof StationTrackObject) {
-                    if (obj instanceof ChestMinecartMob) {
-                        int invSize = ((ChestMinecartMob) obj).getInventory().getSize();
+                if (trackObject instanceof StationTrackObject) {
+                    // We only care about ChestMinecarts. Station Tracks act as normal tracks to
+                    // other carts.
+                    if (mobObject instanceof ChestMinecartMob) {
+                        // Calculate how "full" the chest minecart is. This will affect the
+                        // acceleration.
+                        int invSize = cmMob.getInventory().getSize();
                         int totalFilledSlots = 0;
                         for (int i = 0; i < invSize; ++i) {
-                            if (((ChestMinecartMob) obj).getInventory().isSlotClear(i)) {
+                            if (cmMob.getInventory().isSlotClear(i)) {
                                 continue;
                             }
                             ++totalFilledSlots;
                         }
 
-                        if (getTimeSinceLeftLastStation((ChestMinecartMob) obj) > STATION_COOLDOWN_TIME
-                                || lastStationLeft == -2L) {
-                            obj.setSpeed(0);
-                            obj.minecartSpeed = 0.0f;
-                            delta = 0.0f;
-                            // if (obj.dir == 3) {
-                            // obj.moveX = 100.0f;
-                            // obj.moveY = 0.0f;
-                            // obj.colDx = -100.0f;
-                            // obj.colDy = 0.0f;
-                            // } else if (obj.dir == 2) {
-                            // obj.moveX = 0.0f;
-                            // obj.moveY = -100.0f;
-                            // obj.colDx = 0.0f;
-                            // obj.colDy = 100.0f;
-                            // } else if (obj.dir == 1) {
-                            // obj.moveX = -100.0f;
-                            // obj.moveY = 0.0f;
-                            // obj.colDx = 100.0f;
-                            // obj.colDy = 0.0f;
-                            // } else {
-                            // obj.moveX = 0.0f;
-                            // obj.moveY = 100.0f;
-                            // obj.colDx = 0.0f;
-                            // obj.colDy = -100.0f;
-                            // }
-                            obj.sendMovementPacket(true);
-                        } else if (!((ChestMinecartMob) obj).getIsOpened() && !isBeingStationed
-                                && getTimeSinceLeftLastStation((ChestMinecartMob) obj) <= STATION_COOLDOWN_TIME
-                                && lastStationLeft != -2) {
-                            obj.minecartSpeed = Math.min(210.0f,
-                                    obj.minecartSpeed + (15.85f * Math.min(10, (totalFilledSlots + 1))));
+                        if (cmMob.getTimeSinceLeftLastStation(
+                                (ChestMinecartMob) mobObject) > cmMob.STATION_COOLDOWN_TIME
+                                || cmMob.getLastStationLeft() == -2L) {
+                            // If it's time to make a stop at a station (the cart is entering the station
+                            // track from a non-station track), slow the cart to a stop.
+                            if (cmMob.getLevel().isServerLevel()) {
+                                System.out.println("SERVER ::: ChestMinecart stopping on station track.");
+                            }
+                            if (cmMob.getLevel().isClientLevel()) {
+                                System.out.println("CLIENT ::: ChestMinecart stopping on station track.");
+                            }
+                            mobObject.minecartSpeed = Math.max(0.0f,
+                                    (mobObject.minecartSpeed
+                                            - (cmMob.MAX_SPEED * delta
+                                                    / 250.0f
+                                                    * mobObject.getAccelerationModifier())));
+
+                        } else if (!cmMob.getIsOpened() && !cmMob.getIsBeingStationed()
+                                && cmMob.getTimeSinceLeftLastStation(
+                                        (ChestMinecartMob) mobObject) <= cmMob.STATION_COOLDOWN_TIME
+                                && cmMob.getLastStationLeft() != -2) {
+
+                            // Not enough time has elapsed since the last time the cart was stationed, so
+                            // have this instance of a station track act like a powered track.
+                            if (cmMob.getLevel().isServerLevel()) {
+                                System.out.println("SERVER ::: ChestMinecart leaving station track.");
+                            }
+                            if (cmMob.getLevel().isClientLevel()) {
+                                System.out.println("CLIENT ::: ChestMinecart leaving station track.");
+                            }
+                            mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,
+                                    (mobObject.minecartSpeed
+                                            + (cmMob.BOOST_SPEED * Math.min(10, (totalFilledSlots + 1))) * delta
+                                                    / 250.0f
+                                                    * mobObject.getAccelerationModifier()));
+
                         }
 
-                        if (!((ChestMinecartMob) obj).getIsOpened()) {
-                            if (obj.minecartSpeed <= 0.0F && !isBeingStationed
-                                    && (getTimeSinceLeftLastStation((ChestMinecartMob) obj) > STATION_COOLDOWN_TIME
-                                            || lastStationLeft == -2L)) {
-                                isBeingStationed = true;
-                                stationedTime = obj.getWorldEntity().getTime();
-                                ((ChestMinecartMob) obj).setIsMakingStop(false);
+                        // Only process the next block if the user isn't actively changing the chest
+                        // minecart's inventory.
+                        if (!cmMob.getIsOpened()) {
+                            if (mobObject.minecartSpeed <= 0.0F && !cmMob.getIsBeingStationed()
+                                    && (cmMob.getTimeSinceLeftLastStation(
+                                            (ChestMinecartMob) mobObject) > cmMob.STATION_COOLDOWN_TIME
+                                            || cmMob.getLastStationLeft() == -2L)) {
+                                // The cart is fully stopped on the station track. Tell the game that it's being
+                                // stationed and it's ready to start counting the seconds until it leaves.
+                                cmMob.setIsBeingStationed(true);
+                                cmMob.setStationedTime(mobObject.getWorldEntity().getTime());
+                                cmMob.setIsMakingStop(false);
                             }
 
-                            if (isBeingStationed
-                                    && getTimeSinceStationed((ChestMinecartMob) obj) >= MAX_STATION_WAIT_TIME) {
-                                isBeingStationed = false;
-                                lastStationLeft = obj.getWorldEntity().getTime();
-                                obj.minecartSpeed = Math.min(210.0f,
-                                        obj.minecartSpeed + (15.85f * Math.min(10, (totalFilledSlots + 1))));
+                            if (cmMob.getIsBeingStationed()
+                                    && cmMob.getTimeSinceStationed(
+                                            (ChestMinecartMob) mobObject) >= cmMob.MAX_STATION_WAIT_TIME) {
+                                // The cart has been stationed for at least cmMob.MAX_STATION_WAIT_TIME ms, so
+                                // it's time to send it on its way.
+                                cmMob.setIsBeingStationed(false);
+                                cmMob.setLastStationLeft(mobObject.getWorldEntity().getTime());
+                                mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,
+                                        (mobObject.minecartSpeed
+                                                + (cmMob.BOOST_SPEED * Math.min(10, (totalFilledSlots + 1))))
+                                                * delta
+                                                / 250.0f * mobObject.getAccelerationModifier());
 
-                                if (((StationTrackObject) object).isPowered(obj.getLevel(), tileX, tileY)) {
-                                    if (obj.dir == 3) {
+                                // If this station track is powered, have the cart make a u-turn. Powered
+                                // station tracks are designed to be placed at the end of a hauling track line.
+                                if (((StationTrackObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)) {
+                                    if (mobObject.dir == 3) {
                                         // Set it so the minecart is facing right (dir = 1) and is moving that way
-                                        obj.setFacingDir(1.0F, 0.0F);
-                                        obj.minecartDir = obj.dir;
-                                    } else if (obj.dir == 2) {
+                                        mobObject.setFacingDir(1.0F, 0.0F);
+                                        mobObject.minecartDir = mobObject.dir;
+                                    } else if (mobObject.dir == 2) {
                                         // Set it so the minecart is facing up (dir = 0) and is moving that way
-                                        obj.setFacingDir(0.0F, -1.0F);
-                                        obj.minecartDir = obj.dir;
-                                    } else if (obj.dir == 1) {
+                                        mobObject.setFacingDir(0.0F, -1.0F);
+                                        mobObject.minecartDir = mobObject.dir;
+                                    } else if (mobObject.dir == 1) {
                                         // Set it so the minecart is facing left (dir = 3) and is moving that way
-                                        obj.setFacingDir(-1.0F, 0.0F);
-                                        obj.minecartDir = obj.dir;
+                                        mobObject.setFacingDir(-1.0F, 0.0F);
+                                        mobObject.minecartDir = mobObject.dir;
                                     } else {
                                         // Set it so the minecart is facing down (dir = 2) and is moving that way
-                                        obj.setFacingDir(0.0F, 1.0F);
-                                        obj.minecartDir = obj.dir;
+                                        mobObject.setFacingDir(0.0F, 1.0F);
+                                        mobObject.minecartDir = mobObject.dir;
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-
-            obj.sendMovementPacket(false);
-        }
-
-        public static long getTimeSinceStationed(ChestMinecartMob mob) {
-            if (stationedTime < 0L) {
-                return stationedTime;
-            } else {
-                return isBeingStationed ? mob.getWorldEntity().getTime() - stationedTime : -1L;
-            }
-        }
-
-        public static long getTimeSinceLeftLastStation(ChestMinecartMob mob) {
-            if (lastStationLeft < 0L) {
-                return lastStationLeft;
-            } else {
-                return isBeingStationed ? -1
-                        : mob.getWorldEntity().getTime() - lastStationLeft;
             }
         }
     }

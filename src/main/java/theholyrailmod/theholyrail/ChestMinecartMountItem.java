@@ -24,7 +24,7 @@ import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
 
 public class ChestMinecartMountItem extends MountItem implements PlaceableItemInterface {
-   public ChestMinecartMountItem() { 
+   public ChestMinecartMountItem() {
       super("chestminecartmob");
       this.setMounterPos = false;
    }
@@ -38,42 +38,23 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
 
    @Override
    public String canUseMount(InventoryItem item, PlayerMob player, Level level) {
-      Mob lastMount = player.getMount();
-      if (lastMount != null) {
-         return null;
-      } else {
-         String superError = super.canUseMount(item, player, level);
-         if (superError != null) {
-            return superError;
-         } else {
-            int playerTileX = player.getTileX();
-            int playerTileY = player.getTileY();
-
-            for(int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
-               for(int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
-                  if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
-                     return null;
-                  }
-               }
-            }
-
-            return Localization.translate("misc", "cannotusemounthere", "mount", this.getDisplayName(item));
-         }
-      }
+      return null;
    }
 
    @Override
-   public java.awt.geom.Point2D.Float getMountSpawnPos(Mob mount, ServerClient client, float playerX, float playerY, InventoryItem item, Level level) {
+   public java.awt.geom.Point2D.Float getMountSpawnPos(Mob mount, ServerClient client, float playerX, float playerY,
+         InventoryItem item, Level level) {
       PlayerMob player = client.playerMob;
       float bestDist = java.lang.Float.MAX_VALUE;
       MinecartLinePos bestPos = null;
       int playerTileX = player.getTileX();
       int playerTileY = player.getTileY();
 
-      for(int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
-         for(int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
+      for (int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
+         for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
             if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
-               MinecartLines lines = ((MinecartTrackObject)level.getObject(tileX, tileY)).getMinecartLines(level, tileX, tileY, 0.0F, 0.0F);
+               MinecartLines lines = ((MinecartTrackObject) level.getObject(tileX, tileY)).getMinecartLines(level,
+                     tileX, tileY, 0.0F, 0.0F);
                MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.dir);
                if (pos != null) {
                   float distance = player.getDistance(pos.x, pos.y);
@@ -88,7 +69,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
 
       if (bestPos != null) {
          mount.dir = bestPos.dir;
-         ((ChestMinecartMob)mount).minecartDir = bestPos.dir;
+         ((ChestMinecartMob) mount).minecartDir = bestPos.dir;
          return new java.awt.geom.Point2D.Float(bestPos.x, bestPos.y);
       } else {
          return super.getMountSpawnPos(mount, client, playerX, playerY, item, level);
@@ -96,35 +77,35 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
    }
 
    @Override
-   public void setDrawAttackRotation(InventoryItem item, ItemAttackDrawOptions drawOptions, float attackDirX, float attackDirY, float attackProgress) {
+   public void setDrawAttackRotation(InventoryItem item, ItemAttackDrawOptions drawOptions, float attackDirX,
+         float attackDirY, float attackProgress) {
       drawOptions.swingRotation(attackProgress);
    }
 
    @Override
    public InventoryItem onAttack(
-      Level level,
-      int x,
-      int y,
-      PlayerMob player,
-      int attackHeight,
-      InventoryItem item,
-      PlayerInventorySlot slot,
-      int animAttack,
-      int seed,
-      PacketReader contentReader
-   ) {
+         Level level,
+         int x,
+         int y,
+         PlayerMob player,
+         int attackHeight,
+         InventoryItem item,
+         PlayerInventorySlot slot,
+         int animAttack,
+         int seed,
+         PacketReader contentReader) {
       if (this.canPlace(level, x, y, player, item, contentReader) == null) {
          if (level.isServerLevel()) {
             Mob mob = MobRegistry.getMob("chestminecartmob", level);
             if (mob instanceof ChestMinecartMob) {
-               ((ChestMinecartMob)mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
+               ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
                mob.resetUniqueID();
-               level.entityManager.addMob(mob, (float)x, (float)y);
+               level.entityManager.addMob(mob, (float) x, (float) y);
             }
          }
 
          if (level.isClientLevel()) {
-            Screen.playSound(GameResources.cling, SoundEffect.effect((float)x, (float)y).volume(0.8F));
+            Screen.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
          }
 
          item.setAmount(item.getAmount() - 1);
@@ -139,13 +120,14 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
       return null;
    }
 
-   protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item, PacketReader contentReader) {
-      if (player.getPositionPoint().distance((double)x, (double)y) > 100.0) {
+   protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item,
+         PacketReader contentReader) {
+      if (player.getPositionPoint().distance((double) x, (double) y) > 100.0) {
          return "outofrange";
       } else {
          Mob mob = MobRegistry.getMob("chestminecartmob", level);
          if (mob != null) {
-            mob.setPos((float)x, (float)y, true);
+            mob.setPos((float) x, (float) y, true);
             if (mob.collidesWith(level)) {
                return "collision";
             }
@@ -161,7 +143,8 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
    }
 
    @Override
-   public void drawPlacePreview(Level level, int x, int y, GameCamera camera, PlayerMob player, InventoryItem item, PlayerInventorySlot slot) {
+   public void drawPlacePreview(Level level, int x, int y, GameCamera camera, PlayerMob player, InventoryItem item,
+         PlayerInventorySlot slot) {
       String error = this.canPlace(level, x, y, player, item, null);
       if (error == null) {
          int placeDir = player.isAttacking ? player.beforeAttackDir : player.dir;
@@ -169,7 +152,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
       }
    }
 
-   public static int registerChestMinecartMountItem() {   
+   public static int registerChestMinecartMountItem() {
       return ItemRegistry.registerItem("chestminecart", new ChestMinecartMountItem(), 90, true);
    }
 }

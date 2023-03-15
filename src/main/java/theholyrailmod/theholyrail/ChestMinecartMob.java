@@ -59,8 +59,18 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    protected boolean breakParticleAlternate;
    public Inventory itemInventory = new Inventory(20);
 
+   // vars used by the MinecartMobPatch
+   public long stationedTime = -1L;
+   public long lastStationLeft = -2L;
+   public boolean isBeingStationed = false;
+   public final long MAX_STATION_WAIT_TIME = 5200L;
+   public final long STATION_COOLDOWN_TIME = 350L;
+   public final float BOOST_SPEED = 8500f;
+   public final float MAX_SPEED = 210.0f;
+   // ----------------------------------------------
+
    public ChestMinecartMob() {
-      setSpeed(210.0F);
+      setSpeed(MAX_SPEED);
       setFriction(3.2F);
       this.accelerationMod = 0.08F;
    }
@@ -70,6 +80,9 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       super.addSaveData(save);
       save.addInt("chestMinecartDir", this.chestMinecartDir);
       save.addFloat("chestMinecartSpeed", this.chestMinecartSpeed);
+      save.addLong("lastStationLeft", this.lastStationLeft);
+      save.addLong("stationedTime", this.stationedTime);
+      save.addBoolean("isBeingStationed", this.isBeingStationed);
       save.addBoolean("isOpened", this.isOpened);
       save.addSaveData(InventorySave.getSave(this.itemInventory, "items"));
    }
@@ -79,6 +92,9 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       super.applyLoadData(save);
       this.chestMinecartDir = save.getInt("chestMinecartDir", this.chestMinecartDir);
       this.chestMinecartSpeed = save.getFloat("chestMinecartSpeed", this.chestMinecartSpeed);
+      this.lastStationLeft = save.getLong("lastStationLeft", this.lastStationLeft);
+      this.stationedTime = save.getLong("stationedTime", this.stationedTime);
+      this.isBeingStationed = save.getBoolean("isBeingStationed", this.isBeingStationed);
       this.isOpened = save.getBoolean("isOpened", this.isOpened);
 
       LoadData itemSave = save.getFirstLoadDataByName("items");
@@ -90,6 +106,9 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    @Override
    public void setupMovementPacket(PacketWriter writer) {
       super.setupMovementPacket(writer);
+      writer.putNextBoolean(this.isBeingStationed);
+      writer.putNextLong(this.lastStationLeft);
+      writer.putNextLong(this.stationedTime);
       writer.putNextFloat(this.chestMinecartSpeed);
       writer.putNextMaxValue(this.chestMinecartDir, 3);
    }
@@ -97,6 +116,9 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    @Override
    public void applyMovementPacket(PacketReader reader, boolean isDirect) {
       super.applyMovementPacket(reader, isDirect);
+      this.isBeingStationed = reader.getNextBoolean();
+      this.lastStationLeft = reader.getNextLong();
+      this.stationedTime = reader.getNextLong();
       this.chestMinecartSpeed = reader.getNextFloat();
       this.chestMinecartDir = reader.getNextMaxValue(3);
    }
@@ -301,6 +323,47 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
 
    public void setIsMakingStop(boolean stopping) {
       this.isMakingStop = stopping;
+   }
+
+   public long getStationedTime() {
+      return this.stationedTime;
+   }
+
+   public void setStationedTime(long stationedDur) {
+      this.stationedTime = stationedDur;
+   }
+
+   public long getLastStationLeft() {
+      return this.lastStationLeft;
+   }
+
+   public void setLastStationLeft(long stationedLeft) {
+      this.lastStationLeft = stationedLeft;
+   }
+
+   public boolean getIsBeingStationed() {
+      return this.isBeingStationed;
+   }
+
+   public void setIsBeingStationed(boolean beingStationed) {
+      this.isBeingStationed = beingStationed;
+   }
+
+   public long getTimeSinceStationed(ChestMinecartMob mob) {
+      if (stationedTime < 0L) {
+         return stationedTime;
+      } else {
+         return isBeingStationed ? mob.getWorldEntity().getTime() - stationedTime : -1L;
+      }
+   }
+
+   public long getTimeSinceLeftLastStation(ChestMinecartMob mob) {
+      if (lastStationLeft < 0L) {
+         return lastStationLeft;
+      } else {
+         return isBeingStationed ? -1
+               : mob.getWorldEntity().getTime() - lastStationLeft;
+      }
    }
 
    public static int registerChestMinecartMob() {
