@@ -83,7 +83,7 @@ public class MinecartMobPatch {
                         // how many slots in the cart are full.
                         // The emptier, the faster.
                         float inventoryAccelerationMod = Math.max(0.7f,
-                                Math.max(1.25f, (4 / Math.min(10, (cmMob.getFilledInventorySlots(false) + 1))) * 0.5f));
+                                Math.min(1.25f, (4 / Math.min(10, (cmMob.getFilledInventorySlots(false) + 1))) * 0.5f));
 
                         if (cmMob.getTimeSinceLeftLastStation(
                                 (ChestMinecartMob) mobObject) > cmMob.STATION_COOLDOWN_TIME
