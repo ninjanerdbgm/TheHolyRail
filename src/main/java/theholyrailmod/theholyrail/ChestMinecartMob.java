@@ -53,11 +53,12 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public int chestMinecartDir;
    public boolean isOpened;
    public boolean isMakingStop;
+   public Inventory itemInventory = new Inventory(20);
+   public int filledInventorySlots;
    protected SoundPlayer movingSound;
    protected SoundPlayer breakingSound;
    protected float breakParticleBuffer;
    protected boolean breakParticleAlternate;
-   public Inventory itemInventory = new Inventory(20);
 
    // vars used by the MinecartMobPatch
    public long stationedTime = -1L;
@@ -65,14 +66,15 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public boolean isBeingStationed = false;
    public final long MAX_STATION_WAIT_TIME = 5200L;
    public final long STATION_COOLDOWN_TIME = 350L;
-   public final float BOOST_SPEED = 8500f;
-   public final float MAX_SPEED = 210.0f;
+   public final float MAX_SPEED = 190.0f;
+   public final float BOOST_SPEED = MAX_SPEED * 4.04f;
    // ----------------------------------------------
 
    public ChestMinecartMob() {
       setSpeed(MAX_SPEED);
       setFriction(3.2F);
       this.accelerationMod = 0.08F;
+      this.filledInventorySlots = 0;
    }
 
    @Override
@@ -101,6 +103,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       if (itemSave != null) {
          this.itemInventory.override(InventorySave.loadSave(itemSave));
       }
+      getFilledInventorySlots(true);
    }
 
    @Override
@@ -299,6 +302,40 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       }
 
       return out;
+   }
+
+   public int getFilledInventorySlots(boolean recalc) {
+      if (recalc) {
+         int invSize = this.getInventory().getSize();
+         int totalFilledSlots = 0;
+         for (int i = 0; i < invSize; ++i) {
+            if (this.getInventory().isSlotClear(i)) {
+               continue;
+            }
+            ++totalFilledSlots;
+         }
+
+         return totalFilledSlots;
+      } else {
+         return this.filledInventorySlots;
+      }
+   }
+
+   public void setFilledInventorySlots(int filledSlots) {
+      this.filledInventorySlots = filledSlots;
+   }
+
+   public void getAndSetFilledInventorySlots() {
+      int invSize = this.getInventory().getSize();
+      int totalFilledSlots = 0;
+      for (int i = 0; i < invSize; ++i) {
+         if (this.getInventory().isSlotClear(i)) {
+            continue;
+         }
+         ++totalFilledSlots;
+      }
+
+      this.filledInventorySlots = totalFilledSlots;
    }
 
    public void sortItems() {

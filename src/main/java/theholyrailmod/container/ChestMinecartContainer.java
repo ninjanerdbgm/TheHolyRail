@@ -108,6 +108,7 @@ public class ChestMinecartContainer extends MobContainer {
     @Override
     public void onClose() {
         minecartMob.setIsOpened(false);
+        minecartMob.getAndSetFilledInventorySlots();
         super.onClose();
     }
 
