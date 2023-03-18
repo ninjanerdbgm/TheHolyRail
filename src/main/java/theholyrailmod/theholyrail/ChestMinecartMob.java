@@ -233,7 +233,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
                moveX = -1.0F;
             }
 
-            MinecartLines lines = trackObject.getMinecartLines(level, tileX, tileY, moveX, moveY);
+            MinecartLines lines = trackObject.getMinecartLines(level, tileX, tileY, moveX, moveY, false);
             MinecartLinePos pos = lines.getMinecartPos((float) levelX, (float) levelY, dir);
             if (pos != null) {
                int drawX = camera.getDrawX(pos.x) - 32;

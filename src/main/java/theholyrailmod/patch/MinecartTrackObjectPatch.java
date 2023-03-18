@@ -12,13 +12,13 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner.Typing;
 
 public class MinecartTrackObjectPatch {
     @ModMethodPatch(target = MinecartTrackObject.class, name = "getMinecartLines", arguments = { Level.class, int.class,
-            int.class, float.class, float.class })
+            int.class, float.class, float.class, boolean.class })
     public static class AddHolyRailInteroperability {
         @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
         public static MinecartLines onEnter(@Advice.This MinecartTrackObject obj, @Advice.Argument(0) Level level,
                 @Advice.Argument(1) int x, @Advice.Argument(2) int y, @Advice.Argument(3) float entityDx,
-                @Advice.Argument(4) float entityDy) {
-            return getMinecartLines(obj, level, x, y, entityDx, entityDy);
+                @Advice.Argument(4) float entityDy, @Advice.Argument(5) boolean ignoreEntityDirection) {
+            return getMinecartLines(obj, level, x, y, entityDx, entityDy, ignoreEntityDirection);
         }
 
         @Advice.OnMethodExit
@@ -30,7 +30,7 @@ public class MinecartTrackObjectPatch {
         }
 
         public static MinecartLines getMinecartLines(MinecartTrackObject obj, Level level, int x, int y, float entityDx,
-                float entityDy) {
+                float entityDy, boolean ignoreEntityDirection) {
             String[] railIds = new String[] { "minecarttrack", "poweredrail", "stationtrack" };
 
             MinecartLines lines = new MinecartLines(x, y);
@@ -58,7 +58,7 @@ public class MinecartTrackObjectPatch {
                         if (success) {
                             lines.up = MinecartLine.up(x, y);
                             lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx,
-                                    entityDy).down;
+                                    entityDy, ignoreEntityDirection).down;
                             anyConnectionFromSides = true;
                         } else {
                             straightAcross = true;
@@ -80,7 +80,7 @@ public class MinecartTrackObjectPatch {
                         if (success) {
                             lines.down = MinecartLine.down(x, y);
                             lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx,
-                                    entityDy).up;
+                                    entityDy, ignoreEntityDirection).up;
                             anyConnectionFromSides = true;
                         } else {
                             straightAcross = true;
@@ -90,7 +90,8 @@ public class MinecartTrackObjectPatch {
 
                 if (hasLeft) {
                     lines.left = MinecartLine.left(x, y);
-                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy).right;
+                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).right;
                 } else if (rotation == 3 || !anyConnectionFromSides) {
                     lines.left = MinecartLine.leftEnd(x, y);
                     lines.left.nextNegative = null;
@@ -98,7 +99,8 @@ public class MinecartTrackObjectPatch {
 
                 if (hasRight) {
                     lines.right = MinecartLine.right(x, y);
-                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy).left;
+                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).left;
                 } else if (rotation == 1 || !anyConnectionFromSides) {
                     lines.right = MinecartLine.rightEnd(x, y);
                     lines.right.nextPositive = null;
@@ -111,13 +113,16 @@ public class MinecartTrackObjectPatch {
 
                 if (straightAcross) {
                     lines.up = MinecartLine.up(x, y);
-                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy).down;
+                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy,
+                            ignoreEntityDirection).down;
                     lines.down = MinecartLine.down(x, y);
-                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy).up;
+                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy,
+                            ignoreEntityDirection).up;
                     lines.up.nextPositive = () -> lines.down;
                     lines.down.nextNegative = () -> lines.up;
                 } else if (lines.down != null) {
-                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy).up;
+                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy,
+                            ignoreEntityDirection).up;
                     if (rotation == 1) {
                         if (lines.left == null || entityDy > turnThreshold) {
                             lines.right.nextNegative = () -> lines.down;
@@ -132,7 +137,8 @@ public class MinecartTrackObjectPatch {
                         lines.down.nextNegative = () -> lines.left;
                     }
                 } else if (lines.up != null) {
-                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy).down;
+                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy,
+                            ignoreEntityDirection).down;
                     if (rotation == 1) {
                         if (lines.left == null || entityDy < -turnThreshold) {
                             lines.right.nextNegative = () -> lines.up;
@@ -164,7 +170,7 @@ public class MinecartTrackObjectPatch {
                         if (success) {
                             lines.left = MinecartLine.left(x, y);
                             lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx,
-                                    entityDy).right;
+                                    entityDy, ignoreEntityDirection).right;
                             anyConnectionFromSides = true;
                         } else {
                             straightAcross = true;
@@ -186,7 +192,7 @@ public class MinecartTrackObjectPatch {
                         if (success) {
                             lines.right = MinecartLine.right(x, y);
                             lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx,
-                                    entityDy).left;
+                                    entityDy, ignoreEntityDirection).left;
                             anyConnectionFromSides = true;
                         } else {
                             straightAcross = true;
@@ -196,7 +202,8 @@ public class MinecartTrackObjectPatch {
 
                 if (hasUp) {
                     lines.up = MinecartLine.up(x, y);
-                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy).down;
+                    lines.up.nextNegative = () -> getMinecartLines(obj, level, x, y - 1, entityDx, entityDy,
+                            ignoreEntityDirection).down;
                 } else if (rotation == 0 || !anyConnectionFromSides) {
                     lines.up = MinecartLine.upEnd(x, y);
                     lines.up.nextNegative = null;
@@ -204,7 +211,8 @@ public class MinecartTrackObjectPatch {
 
                 if (hasDown) {
                     lines.down = MinecartLine.down(x, y);
-                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy).up;
+                    lines.down.nextPositive = () -> getMinecartLines(obj, level, x, y + 1, entityDx, entityDy,
+                            ignoreEntityDirection).up;
                 } else if (rotation == 2 || !anyConnectionFromSides) {
                     lines.down = MinecartLine.downEnd(x, y);
                     lines.down.nextPositive = null;
@@ -217,13 +225,16 @@ public class MinecartTrackObjectPatch {
 
                 if (straightAcross) {
                     lines.left = MinecartLine.left(x, y);
-                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy).right;
+                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).right;
                     lines.right = MinecartLine.right(x, y);
-                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy).left;
+                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).left;
                     lines.left.nextPositive = () -> lines.right;
                     lines.right.nextNegative = () -> lines.left;
                 } else if (lines.right != null) {
-                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy).left;
+                    lines.right.nextPositive = () -> getMinecartLines(obj, level, x + 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).left;
                     if (rotation == 2) {
                         if (lines.up == null || entityDx > turnThreshold) {
                             lines.down.nextNegative = () -> lines.right;
@@ -238,7 +249,8 @@ public class MinecartTrackObjectPatch {
                         lines.right.nextNegative = () -> lines.up;
                     }
                 } else if (lines.left != null) {
-                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy).right;
+                    lines.left.nextNegative = () -> getMinecartLines(obj, level, x - 1, y, entityDx, entityDy,
+                            ignoreEntityDirection).right;
                     if (rotation == 2) {
                         if (lines.up == null || entityDx < -turnThreshold) {
                             lines.down.nextNegative = () -> lines.left;

@@ -54,7 +54,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
             if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
                MinecartLines lines = ((MinecartTrackObject) level.getObject(tileX, tileY)).getMinecartLines(level,
-                     tileX, tileY, 0.0F, 0.0F);
+                     tileX, tileY, 0.0F, 0.0F, false);
                MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.dir);
                if (pos != null) {
                   float distance = player.getDistance(pos.x, pos.y);

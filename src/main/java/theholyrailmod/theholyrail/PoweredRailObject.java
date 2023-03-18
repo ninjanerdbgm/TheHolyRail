@@ -28,7 +28,7 @@ public class PoweredRailObject extends MinecartTrackObject {
       this.setItemCategory(new String[] { "wiring" });
       this.stackSize = 50;
       this.showsWire = true;
-      this.canReplaceRotation = false;
+      // this.canReplaceRotation = false;
       this.canPlaceOnShore = false; // for now
       this.canPlaceOnLiquid = false; // for now
       this.overridesInLiquid = false; // for now

@@ -38,7 +38,7 @@ public class StationTrackObject extends MinecartTrackObject {
       this.setItemCategory(new String[] { "wiring" });
       this.stackSize = 50;
       this.showsWire = true;
-      this.canReplaceRotation = false;
+      // this.canReplaceRotation = false;
       this.canPlaceOnShore = false; // for now
       this.canPlaceOnLiquid = false; // for now
       this.overridesInLiquid = false; // for now
@@ -518,8 +518,7 @@ public class StationTrackObject extends MinecartTrackObject {
       if (level.isServerLevel() && player.isServerClient()) {
          ServerClient client = player.getServerClient();
          Packet pack = new Packet();
-         PacketWriter writer = new PacketWriter(pack);
-         writer.putNextInt(this.objectId);
+
          int STATION_TRACK_CONTAINER = StationTrackContainer.registryId;
          PacketOpenContainer p = PacketOpenContainer.LevelObject(STATION_TRACK_CONTAINER,
                x, y, pack);

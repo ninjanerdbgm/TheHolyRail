@@ -7,13 +7,13 @@ import necesse.gfx.forms.presets.containerComponent.ContainerFormSwitcher;
 import theholyrailmod.container.StationTrackContainer;
 import theholyrailmod.theholyrail.StationTrackObject;
 
-public class StationTrackContainerForm extends ContainerFormSwitcher<StationTrackContainer> {
+public class StationTrackContainerForm<T extends StationTrackContainer>
+        extends ContainerFormSwitcher<StationTrackContainer> {
     public StationTrackConfigureForm stationTrackForm;
     public StationTrackObject stationObject;
 
     public StationTrackContainerForm(Client client, StationTrackContainer container) {
         super(client, container);
-        container.containerForm = this;
         stationObject = container.stationTrackObject;
 
         GameMessage storageTitle = new LocalMessage("ui", "stationtrackheader");
