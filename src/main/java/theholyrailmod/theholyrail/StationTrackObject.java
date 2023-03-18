@@ -2,6 +2,13 @@ package theholyrailmod.theholyrail;
 
 import java.util.Arrays;
 import java.util.List;
+
+import necesse.engine.localization.Localization;
+import necesse.engine.network.Packet;
+import necesse.engine.network.PacketWriter;
+import necesse.engine.network.packet.PacketOpenContainer;
+import necesse.engine.network.server.ServerClient;
+import necesse.engine.registries.ContainerRegistry;
 import necesse.engine.registries.ObjectRegistry;
 import necesse.engine.tickManager.TickManager;
 import necesse.entity.mobs.PlayerMob;
@@ -12,17 +19,20 @@ import necesse.gfx.drawables.LevelSortedDrawable;
 import necesse.gfx.drawables.OrderableDrawables;
 import necesse.gfx.drawOptions.texture.TextureDrawOptions;
 import necesse.gfx.gameTexture.GameTexture;
+import necesse.gfx.gameTooltips.ListGameTooltips;
+import necesse.inventory.InventoryItem;
 import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
+import theholyrailmod.container.StationTrackContainer;
 
 public class StationTrackObject extends MinecartTrackObject {
    private String[] railIds = new String[] { "minecarttrack", "poweredrail", "stationtrack" };
 
    protected int objectId;
-
    public GameTexture unpoweredTexture;
    public GameTexture poweredTexture;
+   public long MAX_STATION_WAIT_TIME = 5200L;
 
    public StationTrackObject() {
       this.setItemCategory(new String[] { "wiring" });
@@ -483,6 +493,37 @@ public class StationTrackObject extends MinecartTrackObject {
 
       if (sprite.goingLeft && !sprite.connectedLeft) {
          this.endingTexture.initDraw().sprite(0, 3, 32).alpha(alpha).draw(drawX, drawY);
+      }
+   }
+
+   @Override
+   public boolean canInteract(Level level, int x, int y, PlayerMob player) {
+      return true;
+   }
+
+   @Override
+   public String getInteractTip(Level level, int x, int y, PlayerMob perspective, boolean debug) {
+      return Localization.translate("controls", "usetip");
+   }
+
+   @Override
+   public ListGameTooltips getItemTooltips(InventoryItem item, PlayerMob perspective) {
+      ListGameTooltips tooltips = new ListGameTooltips();
+      tooltips.add(Localization.translate("itemtooltip", "stationtracktip"));
+      return tooltips;
+   }
+
+   @Override
+   public void interact(Level level, int x, int y, PlayerMob player) {
+      if (level.isServerLevel() && player.isServerClient()) {
+         ServerClient client = player.getServerClient();
+         Packet pack = new Packet();
+         PacketWriter writer = new PacketWriter(pack);
+         writer.putNextInt(this.objectId);
+         int STATION_TRACK_CONTAINER = StationTrackContainer.registryId;
+         PacketOpenContainer p = PacketOpenContainer.LevelObject(STATION_TRACK_CONTAINER,
+               x, y, pack);
+         ContainerRegistry.openAndSendContainer(client, p);
       }
    }
 

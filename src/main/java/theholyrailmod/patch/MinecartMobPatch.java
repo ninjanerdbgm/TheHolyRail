@@ -129,7 +129,7 @@ public class MinecartMobPatch {
 
                             if (cmMob.getIsBeingStationed()
                                     && cmMob.getTimeSinceStationed(
-                                            (ChestMinecartMob) mobObject) >= cmMob.MAX_STATION_WAIT_TIME) {
+                                            (ChestMinecartMob) mobObject) >= ((StationTrackObject) trackObject).MAX_STATION_WAIT_TIME) {
                                 // The cart has been stationed for at least cmMob.MAX_STATION_WAIT_TIME ms, so
                                 // it's time to send it on its way with a little extra oomph.
                                 cmMob.setIsBeingStationed(false);

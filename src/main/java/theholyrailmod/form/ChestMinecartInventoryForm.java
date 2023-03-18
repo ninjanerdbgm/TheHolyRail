@@ -48,7 +48,7 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
             int x = i % 10;
             int y = i / 10;
             this.slots[i] = this.itemForm
-                    .addComponent(new FormContainerSlot(client, slotIndex, 10 + x * 40, 4 + y * 40 + 30));
+                    .addComponent(new FormContainerSlot(client, slotIndex, 10 + x * 40, 40 + y * 40 + 30));
         }
 
         this.storageLabel = this.itemForm.addComponent(
@@ -58,7 +58,7 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
         FormContentIconButton sortButton = this.itemForm
                 .addComponent(
                         new FormContentIconButton(
-                                11, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                this.itemForm.getWidth() - 101, 10, FormInputSize.SIZE_24, ButtonColor.BASE,
                                 Settings.UI.inventory_sort, new LocalMessage("ui", "chestminecartsort")));
         sortButton.onClicked(e -> {
             cont.buttonSortInventory.runAndSend();
@@ -69,37 +69,37 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
         FormContentIconButton storeStackAll = this.itemForm
                 .addComponent(
                         new FormContentIconButton(
-                                41, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                this.itemForm.getWidth() - 71, 10, FormInputSize.SIZE_24, ButtonColor.BASE,
                                 Settings.UI.inventory_quickstack_out,
                                 new LocalMessage("ui", "chestminecartstorestackall")));
         storeStackAll.onClicked(e -> {
             cont.buttonStoreStackAll.runAndSend();
         });
-        storeStackAll.setCooldown(500);
+        storeStackAll.setCooldown(350);
         itemFlow.next(5);
 
         FormContentIconButton takeTakeAll = this.itemForm
                 .addComponent(
                         new FormContentIconButton(
-                                71, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                this.itemForm.getWidth() - 41, 10, FormInputSize.SIZE_24, ButtonColor.BASE,
                                 Settings.UI.inventory_quickstack_in,
                                 new LocalMessage("ui", "chestminecarttaketakeall")));
         takeTakeAll.onClicked(e -> {
             cont.buttonTakeTakeAll.runAndSend();
         });
-        takeTakeAll.setCooldown(500);
+        takeTakeAll.setCooldown(350);
         itemFlow.next(5);
 
         FormContentIconButton takeAllItems = this.itemForm
                 .addComponent(
                         new FormContentIconButton(
-                                101, this.itemForm.getHeight() - 40, FormInputSize.SIZE_24, ButtonColor.BASE,
+                                this.itemForm.getWidth() - 11, 10, FormInputSize.SIZE_24, ButtonColor.BASE,
                                 Settings.UI.container_loot_all,
                                 new LocalMessage("ui", "chestminecarttakeallitems")));
         takeAllItems.onClicked(e -> {
             cont.buttonTakeAll.runAndSend();
         });
-        takeAllItems.setCooldown(500);
+        takeAllItems.setCooldown(350);
     }
 
     public abstract ChestMinecartMob getMob();

@@ -6,6 +6,7 @@ import necesse.inventory.recipe.Ingredient;
 import necesse.inventory.recipe.Recipe;
 import necesse.inventory.recipe.Recipes;
 import theholyrailmod.container.ChestMinecartContainer;
+import theholyrailmod.container.StationTrackContainer;
 import theholyrailmod.theholyrail.ChestMinecartMob;
 import theholyrailmod.theholyrail.PoweredRailObject;
 import theholyrailmod.theholyrail.RailRunnerMob;
@@ -28,6 +29,7 @@ public class TheHolyRail {
                 ChestMinecartMountItem.registerChestMinecartMountItem();
                 RailRunnerMob.registerRailRunnerMob();
                 ChestMinecartContainer.registerChestMinecartContainer();
+                StationTrackContainer.registerStationTrackContainer();
                 ChestMinecartMob.registerChestMinecartMob();
                 PoweredRailObject.registerPoweredRail();
                 StationTrackObject.registerStationTrack();

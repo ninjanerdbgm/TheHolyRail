@@ -64,7 +64,6 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public long stationedTime = -1L;
    public long lastStationLeft = -2L;
    public boolean isBeingStationed = false;
-   public final long MAX_STATION_WAIT_TIME = 5200L;
    public final long STATION_COOLDOWN_TIME = 350L;
    public final float MAX_SPEED = 190.0f;
    public final float BOOST_SPEED = MAX_SPEED * 4.04f;
