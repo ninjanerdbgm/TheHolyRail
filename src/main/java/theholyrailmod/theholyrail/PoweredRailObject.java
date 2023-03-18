@@ -17,23 +17,22 @@ import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
 
 public class PoweredRailObject extends MinecartTrackObject {
-   private String[] railIds = new String[] {"minecarttrack", "poweredrail"};
+   private String[] railIds = new String[] { "minecarttrack", "poweredrail" };
 
    protected int objectId;
 
    public GameTexture unpoweredTexture;
    public GameTexture poweredTexture;
 
-   public PoweredRailObject() { 
-   this.setItemCategory(new String[]{"wiring"});
-   this.stackSize = 50;
-   this.showsWire = true;
-   this.canReplaceRotation = false;
-   this.canPlaceOnShore = false; // for now
-   this.canPlaceOnLiquid = false; // for now
-   this.overridesInLiquid = false; // for now
-   this.isLightTransparent = false;
-   this.roomProperties.add("lights");
+   public PoweredRailObject() {
+      this.setItemCategory(new String[] { "wiring" });
+      this.stackSize = 50;
+      this.showsWire = true;
+      this.canPlaceOnShore = false; // for now
+      this.canPlaceOnLiquid = false; // for now
+      this.overridesInLiquid = false; // for now
+      this.isLightTransparent = false;
+      this.roomProperties.add("lights");
    }
 
    @Override
@@ -54,20 +53,19 @@ public class PoweredRailObject extends MinecartTrackObject {
    }
 
    @Override
-   public void onWireUpdate(Level level, int x, int y, int wireID, boolean active)
-   {        
+   public void onWireUpdate(Level level, int x, int y, int wireID, boolean active) {
       level.lightManager.updateStaticLight(x, y);
 
       if (isPowered(level, x, y)) {
          this.roomProperties.add("lights");
       } else {
-         this.roomProperties.remove("lights");         
+         this.roomProperties.remove("lights");
       }
 
       if (active) {
-         ObjectEntity ent = level.entityManager.getObjectEntity(x, y);       
+         ObjectEntity ent = level.entityManager.getObjectEntity(x, y);
          if (ent != null) {
-            ((PoweredRailObjectEntity)ent).isPowered = true;
+            ((PoweredRailObjectEntity) ent).isPowered = true;
          }
       }
    }
@@ -79,10 +77,10 @@ public class PoweredRailObject extends MinecartTrackObject {
    // rotation == 1 // right
    // rotation == 2 // down
    // rotation == 3 // left
-     
+
    public PoweredRailObject.TrackSprite getPoweredRailSprite(Level level, int tileX, int tileY, int rotation) {
       boolean alternateSprite;
-      synchronized(this.drawRandom) {
+      synchronized (this.drawRandom) {
          alternateSprite = this.drawRandom.seeded(this.getTileSeed(tileX, tileY)).nextBoolean();
       }
 
@@ -277,7 +275,7 @@ public class PoweredRailObject extends MinecartTrackObject {
                   out.connectedDown = false;
                }
 
-               return out.sprite(3,2);
+               return out.sprite(3, 2);
             } else {
                out.goingDown();
                out.goingLeft();
@@ -393,22 +391,21 @@ public class PoweredRailObject extends MinecartTrackObject {
                out.connectedRight = false;
             }
 
-            return out.sprite(1, alternateSprite ? 1 : 0);
+            return out.sprite(0, alternateSprite ? 1 : 0);
          }
       }
    }
 
    @Override
    public void addDrawables(
-      List<LevelSortedDrawable> list,
-      OrderableDrawables tileList,
-      Level level,
-      int tileX,
-      int tileY,
-      TickManager tickManager,
-      GameCamera camera,
-      PlayerMob perspective
-   ) {
+         List<LevelSortedDrawable> list,
+         OrderableDrawables tileList,
+         Level level,
+         int tileX,
+         int tileY,
+         TickManager tickManager,
+         GameCamera camera,
+         PlayerMob perspective) {
       byte rotation = level.getObjectRotation(tileX, tileY);
       GameLight light = level.getLightLevel(tileX, tileY);
       int drawX = camera.getTileDrawX(tileX);
@@ -417,8 +414,9 @@ public class PoweredRailObject extends MinecartTrackObject {
       PoweredRailObject.TrackSprite sprite = this.getPoweredRailSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
-            && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
-            TextureDrawOptions bridgeOptions = this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light).pos(drawX, drawY + 8);
+               && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
+            TextureDrawOptions bridgeOptions = this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light)
+                  .pos(drawX, drawY + 8);
             tileList.add(-100, tm -> bridgeOptions.draw());
          }
 
@@ -427,7 +425,7 @@ public class PoweredRailObject extends MinecartTrackObject {
 
       if (this.isPowered(level, tileX, tileY)) {
          options.add(this.poweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light).pos(drawX, drawY));
-      } else {         
+      } else {
          options.add(this.unpoweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light).pos(drawX, drawY));
       }
       if (sprite.goingUp && !sprite.connectedUp) {
@@ -449,16 +447,15 @@ public class PoweredRailObject extends MinecartTrackObject {
       tileList.add(tm -> options.draw());
    }
 
-   
-
    @Override
-   public void drawPreview(Level level, int tileX, int tileY, int rotation, float alpha, PlayerMob player, GameCamera camera) {
+   public void drawPreview(Level level, int tileX, int tileY, int rotation, float alpha, PlayerMob player,
+         GameCamera camera) {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
       PoweredRailObject.TrackSprite sprite = this.getPoweredRailSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
-            && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
+               && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
             this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
          }
 
@@ -467,7 +464,7 @@ public class PoweredRailObject extends MinecartTrackObject {
 
       if (this.isPowered(level, tileX, tileY)) {
          this.poweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
-      } else {         
+      } else {
          this.unpoweredTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
       }
 
@@ -489,10 +486,10 @@ public class PoweredRailObject extends MinecartTrackObject {
    }
 
    public static int registerPoweredRail() {
-    PoweredRailObject prObj = new PoweredRailObject();
+      PoweredRailObject prObj = new PoweredRailObject();
 
-    prObj.objectId = ObjectRegistry.registerObject("poweredrail", prObj, 10, true);
-    return prObj.objectId;
+      prObj.objectId = ObjectRegistry.registerObject("poweredrail", prObj, 10, true);
+      return prObj.objectId;
    }
 
    private static class TrackSprite {

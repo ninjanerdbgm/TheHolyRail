@@ -24,7 +24,7 @@ import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
 
 public class RailRunnerMountItem extends MountItem implements PlaceableItemInterface {
-   public RailRunnerMountItem() { 
+   public RailRunnerMountItem() {
       super("railrunnermob");
       this.setMounterPos = false;
    }
@@ -49,8 +49,8 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
             int playerTileX = player.getTileX();
             int playerTileY = player.getTileY();
 
-            for(int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
-               for(int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
+            for (int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
+               for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
                   if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
                      return null;
                   }
@@ -63,17 +63,19 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
    }
 
    @Override
-   public java.awt.geom.Point2D.Float getMountSpawnPos(Mob mount, ServerClient client, float playerX, float playerY, InventoryItem item, Level level) {
+   public java.awt.geom.Point2D.Float getMountSpawnPos(Mob mount, ServerClient client, float playerX, float playerY,
+         InventoryItem item, Level level) {
       PlayerMob player = client.playerMob;
       float bestDist = java.lang.Float.MAX_VALUE;
       MinecartLinePos bestPos = null;
       int playerTileX = player.getTileX();
       int playerTileY = player.getTileY();
 
-      for(int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
-         for(int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
+      for (int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
+         for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
             if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
-               MinecartLines lines = ((MinecartTrackObject)level.getObject(tileX, tileY)).getMinecartLines(level, tileX, tileY, 0.0F, 0.0F);
+               MinecartLines lines = ((MinecartTrackObject) level.getObject(tileX, tileY)).getMinecartLines(level,
+                     tileX, tileY, 0.0F, 0.0F, false);
                MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.dir);
                if (pos != null) {
                   float distance = player.getDistance(pos.x, pos.y);
@@ -88,7 +90,7 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
 
       if (bestPos != null) {
          mount.dir = bestPos.dir;
-         ((RailRunnerMob)mount).minecartDir = bestPos.dir;
+         ((RailRunnerMob) mount).minecartDir = bestPos.dir;
          return new java.awt.geom.Point2D.Float(bestPos.x, bestPos.y);
       } else {
          return super.getMountSpawnPos(mount, client, playerX, playerY, item, level);
@@ -96,35 +98,35 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
    }
 
    @Override
-   public void setDrawAttackRotation(InventoryItem item, ItemAttackDrawOptions drawOptions, float attackDirX, float attackDirY, float attackProgress) {
+   public void setDrawAttackRotation(InventoryItem item, ItemAttackDrawOptions drawOptions, float attackDirX,
+         float attackDirY, float attackProgress) {
       drawOptions.swingRotation(attackProgress);
    }
 
    @Override
    public InventoryItem onAttack(
-      Level level,
-      int x,
-      int y,
-      PlayerMob player,
-      int attackHeight,
-      InventoryItem item,
-      PlayerInventorySlot slot,
-      int animAttack,
-      int seed,
-      PacketReader contentReader
-   ) {
+         Level level,
+         int x,
+         int y,
+         PlayerMob player,
+         int attackHeight,
+         InventoryItem item,
+         PlayerInventorySlot slot,
+         int animAttack,
+         int seed,
+         PacketReader contentReader) {
       if (this.canPlace(level, x, y, player, item, contentReader) == null) {
          if (level.isServerLevel()) {
             Mob mob = MobRegistry.getMob("railrunnermob", level);
             if (mob instanceof RailRunnerMob) {
-               ((RailRunnerMob)mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
+               ((RailRunnerMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
                mob.resetUniqueID();
-               level.entityManager.addMob(mob, (float)x, (float)y);
+               level.entityManager.addMob(mob, (float) x, (float) y);
             }
          }
 
          if (level.isClientLevel()) {
-            Screen.playSound(GameResources.cling, SoundEffect.effect((float)x, (float)y).volume(0.8F));
+            Screen.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
          }
 
          item.setAmount(item.getAmount() - 1);
@@ -139,13 +141,14 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
       return null;
    }
 
-   protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item, PacketReader contentReader) {
-      if (player.getPositionPoint().distance((double)x, (double)y) > 100.0) {
+   protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item,
+         PacketReader contentReader) {
+      if (player.getPositionPoint().distance((double) x, (double) y) > 100.0) {
          return "outofrange";
       } else {
          Mob mob = MobRegistry.getMob("railrunnermob", level);
          if (mob != null) {
-            mob.setPos((float)x, (float)y, true);
+            mob.setPos((float) x, (float) y, true);
             if (mob.collidesWith(level)) {
                return "collision";
             }
@@ -161,7 +164,8 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
    }
 
    @Override
-   public void drawPlacePreview(Level level, int x, int y, GameCamera camera, PlayerMob player, InventoryItem item, PlayerInventorySlot slot) {
+   public void drawPlacePreview(Level level, int x, int y, GameCamera camera, PlayerMob player, InventoryItem item,
+         PlayerInventorySlot slot) {
       String error = this.canPlace(level, x, y, player, item, null);
       if (error == null) {
          int placeDir = player.isAttacking ? player.beforeAttackDir : player.dir;
@@ -169,7 +173,7 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
       }
    }
 
-   public static int registerRailRunnerMountItem() {   
+   public static int registerRailRunnerMountItem() {
       return ItemRegistry.registerItem("railrunner", new RailRunnerMountItem(), 90, true);
    }
 }
