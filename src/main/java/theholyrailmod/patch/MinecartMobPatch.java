@@ -3,23 +3,46 @@ package theholyrailmod.patch;
 import necesse.engine.modLoader.annotations.ModMethodPatch;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.summon.MinecartMob;
+import necesse.inventory.Inventory;
+import necesse.inventory.InventoryItem;
 import necesse.level.gameObject.GameObject;
 import net.bytebuddy.asm.Advice;
 import theholyrailmod.theholyrail.ChestMinecartMob;
 import theholyrailmod.theholyrail.PoweredRailObject;
 import theholyrailmod.theholyrail.RailRunnerMob;
 import theholyrailmod.theholyrail.StationTrackObject;
+import theholyrailmod.theholyrail.StationTrackObjectEntity;
 
 public class MinecartMobPatch {
     @ModMethodPatch(target = MinecartMob.class, name = "tickCollisionMovement", arguments = { float.class, Mob.class })
     public static class TickCollisionMovementPatch {
+        public static StationTrackObjectEntity stationTrackEntity;
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.This MinecartMob mobObject,
                 @Advice.Argument(0) float delta,
                 @Advice.Argument(1) Mob rider) {
             int tileX = mobObject.getTileX();
             int tileY = mobObject.getTileY();
+            boolean waitSeconds = false;
+            boolean waitEmpty = false;
+            boolean waitFull = false;
+            boolean roleManual = false;
+            boolean roleLoad = false;
+            boolean roleUnload = false;
             GameObject trackObject = mobObject.getLevel().getObject(tileX, tileY);
+
+            if (trackObject instanceof StationTrackObject) {
+                // set station track-specific variables
+                stationTrackEntity = (StationTrackObjectEntity) mobObject.getLevel().entityManager
+                        .getObjectEntity(tileX, tileY);
+                waitSeconds = stationTrackEntity.getWaitSeconds();
+                waitEmpty = stationTrackEntity.getWaitEmpty();
+                waitFull = stationTrackEntity.getWaitFull();
+                roleManual = stationTrackEntity.getRoleManual();
+                roleLoad = stationTrackEntity.getRoleLoad();
+                roleUnload = stationTrackEntity.getRoleUnload();
+            }
 
             RailRunnerMob rrMob = mobObject instanceof RailRunnerMob ? (RailRunnerMob) mobObject : null;
             ChestMinecartMob cmMob = mobObject instanceof ChestMinecartMob ? (ChestMinecartMob) mobObject : null;
@@ -112,6 +135,16 @@ public class MinecartMobPatch {
 
                         }
 
+                        if (cmMob.getIsBeingStationed()) {
+                            if (roleLoad) {
+                                // Pull from nearby chests
+                                stationTrackEntity.transferItemsToMinecart(cmMob);
+                            } else if (roleUnload) {
+                                // Deposit to nearby chests
+                                stationTrackEntity.transferItemsFromMinecart(cmMob);
+                            }
+                        }
+
                         // Only process the next block if the user isn't actively changing the chest
                         // minecart's inventory.
                         if (!cmMob.getIsOpened()) {
@@ -128,8 +161,11 @@ public class MinecartMobPatch {
                             }
 
                             if (cmMob.getIsBeingStationed()
-                                    && cmMob.getTimeSinceStationed(
-                                            (ChestMinecartMob) mobObject) >= ((StationTrackObject) trackObject).MAX_STATION_WAIT_TIME) {
+                                    && ((waitSeconds && cmMob.getTimeSinceStationed(
+                                            (ChestMinecartMob) mobObject) >= stationTrackEntity
+                                                    .getMaxStationWaitTime())
+                                            || (waitEmpty && cmMob.getIsInventoryEmpty())
+                                            || (waitFull && cmMob.getIsInventoryFull()))) {
                                 // The cart has been stationed for at least cmMob.MAX_STATION_WAIT_TIME ms, so
                                 // it's time to send it on its way with a little extra oomph.
                                 cmMob.setIsBeingStationed(false);

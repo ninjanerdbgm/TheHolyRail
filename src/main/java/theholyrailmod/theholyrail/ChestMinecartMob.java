@@ -146,6 +146,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public void applySpawnPacket(PacketReader reader) {
       super.applySpawnPacket(reader);
       this.itemInventory.override(Inventory.getInventory(reader), hasArrivedAtTarget, hasArrivedAtTarget);
+      getFilledInventorySlots(true);
    }
 
    @Override
@@ -400,6 +401,14 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
          return isBeingStationed ? -1
                : mob.getWorldEntity().getTime() - lastStationLeft;
       }
+   }
+
+   public boolean getIsInventoryEmpty() {
+      return this.getFilledInventorySlots(false) == 0;
+   }
+
+   public boolean getIsInventoryFull() {
+      return this.getFilledInventorySlots(false) == this.getInventory().getSize();
    }
 
    public static int registerChestMinecartMob() {

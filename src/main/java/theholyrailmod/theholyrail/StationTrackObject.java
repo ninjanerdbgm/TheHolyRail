@@ -32,7 +32,6 @@ public class StationTrackObject extends MinecartTrackObject {
    protected int objectId;
    public GameTexture unpoweredTexture;
    public GameTexture poweredTexture;
-   public long MAX_STATION_WAIT_TIME = 5200L;
 
    public StationTrackObject() {
       this.setItemCategory(new String[] { "wiring" });
@@ -517,12 +516,12 @@ public class StationTrackObject extends MinecartTrackObject {
    public void interact(Level level, int x, int y, PlayerMob player) {
       if (level.isServerLevel() && player.isServerClient()) {
          ServerClient client = player.getServerClient();
-         Packet pack = new Packet();
 
          int STATION_TRACK_CONTAINER = StationTrackContainer.registryId;
-         PacketOpenContainer p = PacketOpenContainer.LevelObject(STATION_TRACK_CONTAINER,
-               x, y, pack);
-         ContainerRegistry.openAndSendContainer(client, p);
+         StationTrackObjectEntity oe = (StationTrackObjectEntity) level.entityManager.getObjectEntity(x, y);
+         if (oe != null) {
+            oe.openContainer(STATION_TRACK_CONTAINER, client);
+         }
       }
    }
 

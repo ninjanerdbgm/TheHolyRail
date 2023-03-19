@@ -5,43 +5,40 @@ import necesse.engine.network.Packet;
 import necesse.engine.network.PacketReader;
 import necesse.engine.registries.ContainerRegistry;
 import necesse.engine.registries.ObjectRegistry;
+import necesse.entity.objectEntity.ObjectEntity;
 import necesse.inventory.container.Container;
-
+import necesse.inventory.container.object.OEInventoryContainer;
+import necesse.level.maps.LevelObject;
 import theholyrailmod.form.StationTrackContainerForm;
 import theholyrailmod.theholyrail.StationTrackObject;
+import theholyrailmod.theholyrail.StationTrackObjectEntity;
 
 public class StationTrackContainer extends Container {
     public static int registryId;
-    public StationTrackObject stationTrackObject;
     public NetworkClient client;
+    public StationTrackObjectEntity stationTrackEntity;
 
-    public StationTrackContainer(final NetworkClient client, int uniqueSeed,
+    public StationTrackContainer(final NetworkClient client, int uniqueSeed, StationTrackObjectEntity obj,
             Packet content) {
         super(client, uniqueSeed);
 
-        PacketReader pr = new PacketReader(content);
-
-        int x = pr.getNextShortUnsigned();
-        int y = pr.getNextShortUnsigned();
-        this.stationTrackObject = (StationTrackObject) client.playerMob.getLevel().getObject(x, y);
+        this.stationTrackEntity = obj;
     }
 
     public StationTrackContainer(final NetworkClient client, int uniqueSeed,
-            Packet content, Object serverObject) {
+            Packet content, StationTrackObjectEntity obj, Object serverObject) {
         super(client, uniqueSeed);
 
-        PacketReader pr = new PacketReader(content);
-
-        int x = pr.getNextShortUnsigned();
-        int y = pr.getNextShortUnsigned();
-        this.stationTrackObject = (StationTrackObject) client.playerMob.getLevel().getObject(x, y);
+        this.stationTrackEntity = obj;
     }
 
     public static void registerStationTrackContainer() {
-        registryId = ContainerRegistry.registerContainer(
-                (client, uniqueSeed, content) -> new StationTrackContainerForm<>(client,
-                        new StationTrackContainer(client.getClient(), uniqueSeed, content)),
-                (client, uniqueSeed, content, serverObject) -> new StationTrackContainer(client, uniqueSeed, content,
+        registryId = ContainerRegistry.registerOEContainer(
+                (client, uniqueSeed, oe, content) -> new StationTrackContainerForm<>(client,
+                        new StationTrackContainer(client.getClient(), uniqueSeed, (StationTrackObjectEntity) oe,
+                                content)),
+                (client, uniqueSeed, oe, content, serverObject) -> new StationTrackContainer(client,
+                        uniqueSeed, content, (StationTrackObjectEntity) oe,
                         serverObject));
     }
 }
