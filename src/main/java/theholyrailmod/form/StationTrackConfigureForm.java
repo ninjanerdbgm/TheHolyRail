@@ -131,6 +131,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                     } else {
                         this.errorText = new LocalMessage("", "");
                         this.hasError = false;
+
+                        this.configureFormElements(FromField.WAITINPUTSECONDS);
                     }
                 } catch (Exception ex) {
                     this.errorText = new LocalMessage("ui", "stationwaiterror_invalid");
@@ -338,6 +340,24 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
     }
 
     private void configureFormElements(FromField fromField) {
+        if (fromField == FromField.WAITINPUTSECONDS) {
+            float waitTime = Float.parseFloat(this.waitTimeInput.getText());
+            waitTime *= 1000f;
+            long newStationWaitTime = Math.round(waitTime);
+
+            if (newStationWaitTime == 0L) {
+                this.role_load = this.role_unload = false;
+                this.roleLoadCheckbox.setActive(false);
+                this.roleUnloadCheckbox.setActive(false);
+            } else {
+                this.roleLoadCheckbox.setActive(true);
+                this.roleUnloadCheckbox.setActive(true);
+            }
+
+            this.syncCheckboxes();
+            return;
+        }
+
         if (fromField == FromField.WAITSECONDS && this.wait_seconds) {
             this.wait_empty = false;
             this.wait_full = false;
@@ -345,6 +365,19 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
             this.waitTimeInput.changedTyping(true);
             this.roleLoadCheckbox.setActive(true);
             this.roleUnloadCheckbox.setActive(true);
+
+            float waitTime = Float.parseFloat(this.waitTimeInput.getText());
+            waitTime *= 1000f;
+            long newStationWaitTime = Math.round(waitTime);
+
+            if (newStationWaitTime == 0L) {
+                this.role_load = this.role_unload = false;
+                this.roleLoadCheckbox.setActive(false);
+                this.roleUnloadCheckbox.setActive(false);
+            } else {
+                this.roleLoadCheckbox.setActive(true);
+                this.roleUnloadCheckbox.setActive(true);
+            }
         }
 
         if (fromField == FromField.WAITEMPTY && this.wait_empty) {
@@ -424,6 +457,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
         WAITFULL,
         ROLEMANUAL,
         ROLELOAD,
-        ROLEUNLOAD
+        ROLEUNLOAD,
+        WAITINPUTSECONDS
     }
 }
