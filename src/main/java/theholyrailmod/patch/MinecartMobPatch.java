@@ -107,9 +107,11 @@ public class MinecartMobPatch {
                         float inventoryAccelerationMod = Math.max(0.7f,
                                 Math.min(1.25f, (4 / Math.min(10, (cmMob.getFilledInventorySlots(false) + 1))) * 0.5f));
 
-                        if (cmMob.getTimeSinceLeftLastStation(
+                        if ((cmMob.getTimeSinceLeftLastStation(
                                 (ChestMinecartMob) mobObject) > cmMob.STATION_COOLDOWN_TIME
-                                || cmMob.getLastStationLeft() == -2L) {
+                                || cmMob.getLastStationLeft() == -2L)
+                                && !(waitSeconds && stationTrackEntity
+                                        .getMaxStationWaitTime() == 0L)) {
                             // If it's time to make a stop at a station (the cart is entering the station
                             // track from a non-station track), slow the cart to a stop.
                             mobObject.minecartSpeed = Math.max(0.0f,
@@ -119,18 +121,25 @@ public class MinecartMobPatch {
                                                     * mobObject.getAccelerationModifier())));
                             cmMob.sendMovementPacket(true);
 
-                        } else if (!cmMob.getIsOpened() && !cmMob.getIsBeingStationed()
+                        } else if ((!cmMob.getIsOpened() && !cmMob.getIsBeingStationed()
                                 && cmMob.getTimeSinceLeftLastStation(
                                         (ChestMinecartMob) mobObject) <= cmMob.STATION_COOLDOWN_TIME
-                                && cmMob.getLastStationLeft() != -2) {
-
+                                && cmMob.getLastStationLeft() != -2)
+                                || (waitSeconds && stationTrackEntity
+                                        .getMaxStationWaitTime() == 0L)) {
                             // Not enough time has elapsed since the last time the cart was stationed, so
-                            // have this instance of a station track act like a powered track.
-                            mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,
-                                    (mobObject.minecartSpeed
-                                            + (cmMob.BOOST_SPEED * inventoryAccelerationMod)
-                                                    * delta
-                                                    / 150.0f * mobObject.getAccelerationModifier()));
+                            // have this instance of a station track act like a normal track if unpowered,
+                            // or a powered track if powered.
+                            // NOTE: this code will also trigger if the station track is set to wait for 0
+                            // seconds.
+                            if (!(waitSeconds && stationTrackEntity
+                                    .getMaxStationWaitTime() == 0L)) {
+                                mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,
+                                        (mobObject.minecartSpeed
+                                                + (cmMob.MAX_SPEED * inventoryAccelerationMod)
+                                                        * delta
+                                                        / 150.0f * mobObject.getAccelerationModifier()));
+                            }
 
                         }
 
