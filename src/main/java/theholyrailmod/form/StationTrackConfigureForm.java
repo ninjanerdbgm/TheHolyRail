@@ -104,17 +104,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                         new FormLocalCheckBox("ui", "stationtrackstationwaittime", 10, 43, this.wait_seconds, 300));
         this.waitCheckbox.onClicked(e -> {
             this.wait_seconds = e.from.checked;
-            if (this.wait_seconds) {
-                this.wait_empty = this.waitEmptyCheckbox.checked = false;
-                this.wait_full = this.waitFullCheckbox.checked = false;
-                this.waitTimeInput.setActive(true);
-                this.waitTimeInput.changedTyping(true);
-            } else {
-                if (!this.wait_empty && !this.wait_full) {
-                    this.wait_seconds = true;
-                    this.waitCheckbox.checked = true;
-                }
-            }
+            this.configureFormElements(FromField.WAITSECONDS);
         });
         this.waitCheckbox.checked = this.wait_seconds;
 
@@ -134,9 +124,9 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                     waitTime *= 1000f;
                     long newStationWaitTime = Math.round(waitTime);
 
-                    if (newStationWaitTime < 1000L) {
+                    if (newStationWaitTime < 0L) {
                         this.errorText = new LocalMessage("ui", "stationwaiterror_tooshort");
-                    } else if (newStationWaitTime > 120000L) {
+                    } else if (newStationWaitTime > 180000L) {
                         this.errorText = new LocalMessage("ui", "stationwaiterror_toolong");
                     } else {
                         this.errorText = new LocalMessage("", "");
@@ -160,16 +150,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                                 360));
         this.waitEmptyCheckbox.onClicked(e -> {
             this.wait_empty = e.from.checked;
-            if (this.wait_empty) {
-                this.wait_seconds = this.waitCheckbox.checked = false;
-                this.wait_full = this.waitFullCheckbox.checked = false;
-                this.waitTimeInput.setActive(false);
-            } else {
-                if (!this.wait_seconds && !this.wait_full) {
-                    this.wait_empty = true;
-                    this.waitEmptyCheckbox.checked = true;
-                }
-            }
+            this.configureFormElements(FromField.WAITEMPTY);
         });
         this.waitEmptyCheckbox.checked = this.wait_empty;
 
@@ -179,16 +160,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                                 360));
         this.waitFullCheckbox.onClicked(e -> {
             this.wait_full = e.from.checked;
-            if (this.wait_full) {
-                this.wait_empty = this.waitEmptyCheckbox.checked = false;
-                this.wait_seconds = this.waitCheckbox.checked = false;
-                this.waitTimeInput.setActive(false);
-            } else {
-                if (!this.wait_seconds && !this.wait_empty) {
-                    this.wait_full = true;
-                    this.waitFullCheckbox.checked = true;
-                }
-            }
+            this.configureFormElements(FromField.WAITFULL);
         });
         this.waitFullCheckbox.checked = this.wait_full;
 
@@ -212,15 +184,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                         });
         this.roleManualCheckbox.onClicked(e -> {
             this.role_manual = e.from.checked;
-            if (this.role_manual) {
-                this.role_load = this.roleLoadCheckbox.checked = false;
-                this.role_unload = this.roleUnloadCheckbox.checked = false;
-            } else {
-                if (!this.role_load && !this.role_unload) {
-                    this.role_manual = true;
-                    this.roleManualCheckbox.checked = true;
-                }
-            }
+            this.configureFormElements(FromField.ROLEMANUAL);
         });
         this.roleManualCheckbox.checked = this.role_manual;
 
@@ -239,15 +203,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                         });
         this.roleLoadCheckbox.onClicked(e -> {
             this.role_load = e.from.checked;
-            if (this.role_load) {
-                this.role_manual = this.roleManualCheckbox.checked = false;
-                this.role_unload = this.roleUnloadCheckbox.checked = false;
-            } else {
-                if (!this.role_manual && !this.role_unload) {
-                    this.role_load = true;
-                    this.roleLoadCheckbox.checked = true;
-                }
-            }
+
+            this.configureFormElements(FromField.ROLELOAD);
         });
         this.roleLoadCheckbox.checked = this.role_load;
 
@@ -266,15 +223,7 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                         });
         this.roleUnloadCheckbox.onClicked(e -> {
             this.role_unload = e.from.checked;
-            if (this.role_unload) {
-                this.role_load = this.roleLoadCheckbox.checked = false;
-                this.role_manual = this.roleManualCheckbox.checked = false;
-            } else {
-                if (!this.role_manual && !this.role_load) {
-                    this.role_unload = true;
-                    this.roleUnloadCheckbox.checked = true;
-                }
-            }
+            this.configureFormElements(FromField.ROLEUNLOAD);
         });
         this.roleUnloadCheckbox.checked = this.role_unload;
 
@@ -315,6 +264,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
         this.cancelButton.onClicked(e -> {
             this.setHidden(true);
         });
+
+        this.configureFormElements(FromField.INIT);
 
         cont.stationTrackEntity.sendUpdatePacket();
     }
@@ -366,5 +317,104 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
     @Override
     public boolean shouldOpenInventory() {
         return false;
+    }
+
+    private void syncCheckboxes() {
+        this.waitFullCheckbox.checked = this.wait_full;
+        this.waitEmptyCheckbox.checked = this.wait_empty;
+        this.waitCheckbox.checked = this.wait_seconds;
+        this.roleManualCheckbox.checked = this.role_manual;
+        this.roleLoadCheckbox.checked = this.role_load;
+        this.roleUnloadCheckbox.checked = this.role_unload;
+    }
+
+    private void configureFormElements(FromField fromField) {
+        if (fromField == FromField.WAITSECONDS && this.wait_seconds) {
+            this.wait_empty = false;
+            this.wait_full = false;
+            this.waitTimeInput.setActive(true);
+            this.waitTimeInput.changedTyping(true);
+            this.roleLoadCheckbox.setActive(true);
+            this.roleUnloadCheckbox.setActive(true);
+        }
+
+        if (fromField == FromField.WAITEMPTY && this.wait_empty) {
+            this.wait_seconds = false;
+            this.wait_full = false;
+            this.role_load = false;
+            this.roleUnloadCheckbox.setActive(true);
+            this.roleLoadCheckbox.setActive(false);
+            this.waitTimeInput.setActive(false);
+        }
+
+        if (fromField == FromField.WAITFULL && this.wait_full) {
+            this.wait_empty = false;
+            this.wait_seconds = false;
+            this.role_unload = false;
+            this.roleLoadCheckbox.setActive(true);
+            this.roleUnloadCheckbox.setActive(false);
+            this.waitTimeInput.setActive(false);
+        }
+
+        if (fromField == FromField.ROLEMANUAL && this.role_manual) {
+            this.role_load = false;
+            this.role_unload = false;
+        }
+
+        if (fromField == FromField.ROLELOAD && this.role_load) {
+            this.role_manual = false;
+            this.role_unload = false;
+        }
+
+        if (fromField == FromField.ROLEUNLOAD && this.role_unload) {
+            this.role_load = false;
+            this.role_manual = false;
+        }
+
+        if (!this.wait_full && !this.wait_seconds && !this.wait_empty) {
+            switch (fromField) {
+                case WAITSECONDS:
+                    this.wait_seconds = true;
+                    break;
+                case WAITEMPTY:
+                    this.wait_empty = true;
+                    break;
+                case WAITFULL:
+                    this.wait_full = true;
+                    break;
+                default:
+                    this.wait_seconds = true;
+                    break;
+            }
+        }
+
+        if (!this.role_manual && !this.role_load && !this.role_unload) {
+            switch (fromField) {
+                case ROLEMANUAL:
+                    this.role_manual = true;
+                    break;
+                case ROLELOAD:
+                    this.role_load = true;
+                    break;
+                case ROLEUNLOAD:
+                    this.role_unload = true;
+                    break;
+                default:
+                    this.role_manual = true;
+                    break;
+            }
+        }
+
+        this.syncCheckboxes();
+    }
+
+    private enum FromField {
+        INIT,
+        WAITSECONDS,
+        WAITEMPTY,
+        WAITFULL,
+        ROLEMANUAL,
+        ROLELOAD,
+        ROLEUNLOAD
     }
 }

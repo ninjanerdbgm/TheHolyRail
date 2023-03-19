@@ -26,7 +26,7 @@ import necesse.level.maps.Level;
 import necesse.level.maps.multiTile.MultiTile;
 
 public class StationTrackObjectEntity extends ObjectEntity {
-    private final long TRANSFER_ITEM_COOLDOWN = 50L;
+    private final long TRANSFER_ITEM_COOLDOWN = 75L;
 
     private static float nearbyInventoryRange = 2.5f;
     private LinkedHashSet<Inventory> nearbyInventories = new LinkedHashSet<>();
@@ -142,6 +142,15 @@ public class StationTrackObjectEntity extends ObjectEntity {
         return this.nearbyInventories;
     }
 
+    public void recheckNearbyInventories() {
+        this.nearbyInventories.clear();
+
+        for (InventoryRange inventoryRange : this.findNearbyInventories(
+                this.getLevel(), (int) this.x, (int) this.y, this.range, OEInventory::canUseForNearbyCrafting)) {
+            this.nearbyInventories.add(inventoryRange.inventory);
+        }
+    }
+
     public ArrayList<InventoryRange> findNearbyInventories(Level level, int centerTileX, int centerTileY,
             GameTileRange range, Predicate<OEInventory> filter) {
         if (level == null) {
@@ -166,6 +175,7 @@ public class StationTrackObjectEntity extends ObjectEntity {
     public void transferItemsToMinecart(ChestMinecartMob mob) {
         if (!this.getIsTransferringItems()) {
             this.setIsTransferringItems(true);
+            this.recheckNearbyInventories();
 
             if (this.lastItemTransferTime == -1L) {
                 this.lastItemTransferTime = this.getWorldEntity().getTime();
@@ -236,6 +246,7 @@ public class StationTrackObjectEntity extends ObjectEntity {
     public void transferItemsFromMinecart(ChestMinecartMob mob) {
         if (!this.getIsTransferringItems()) {
             this.setIsTransferringItems(true);
+            this.recheckNearbyInventories();
 
             if (this.lastItemTransferTime == -1L) {
                 this.lastItemTransferTime = this.getWorldEntity().getTime();
