@@ -38,6 +38,11 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
 
    @Override
    public String canUseMount(InventoryItem item, PlayerMob player, Level level) {
+      return Localization.translate("misc", "cannotusemounthere", "mount", this.getDisplayName(item));
+   }
+
+   @Override
+   public InventoryItem useMount(ServerClient client, float playerX, float playerY, InventoryItem item, Level level) {
       return null;
    }
 
