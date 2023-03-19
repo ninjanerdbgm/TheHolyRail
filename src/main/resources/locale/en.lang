@@ -1,11 +1,42 @@
 [item]
 railrunner=Track Torpedo
+chestminecart=Chest Minecart
 
 [itemtooltip]
 railrunnertip=It's a rocket-powered minecart!\nPlace on a track to really see it shine.
+chestminecarttip=Store items in the chest and send\nthem on their way!
+stationtracktip=Creates a Chest Minecart station.\nRight-click after placing to configure.
 
 [mob]
 railrunnermob=Track Torpedo
+chestminecartmob=Chest Minecart
 
 [object]
 poweredrail=Powered Track
+stationtrack=Station Track
+
+[help]
+stationtrackstationwaittime_help=Set the amount of time the Chest\nMinecart waits at this station.
+
+[ui]
+chestminecartstorage=Chest Minecart
+chestminecartsort=Sort Items
+chestminecartstorestackall=Fill minecart stacks from inventory
+chestminecarttaketakeall=Fill inventory stacks from minecart
+chestminecarttakeallitems=Take all items from minecart
+stationtrackheader=Configure Station Track
+stationtrackstationwaittime=Wait at station for X seconds:
+stationtrackstationwaittime_full=Wait at station until chest minecart is full.
+stationtrackstationwaittime_empty=Wait at station until chest minecart is empty.
+stationtrackautochestlabel=Station Role
+stationtrackautochestlabel_unload=Unload
+stationtrackautochestlabel_load=Load
+stationtrackautochestlabel_manual=Manual
+stationsave=Save
+stationcancel=Cancel
+stationrolemanualtip=Chest Minecarts will not interact with nearby chests.
+stationroleloadtip=Chest Minecarts will take items from nearby chests.
+stationroleunloadtip=Chest Minecarts will deposit items into nearby chests.
+stationwaiterror_tooshort=Wait time must be larger than 1000ms.
+stationwaiterror_toolong=Wait time must be shorter than 120000ms.
+stationwaiterror_invalid=Please enter a number between 1000 and 120000.

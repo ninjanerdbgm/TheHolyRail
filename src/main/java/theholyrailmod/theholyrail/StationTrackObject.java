@@ -2,6 +2,13 @@ package theholyrailmod.theholyrail;
 
 import java.util.Arrays;
 import java.util.List;
+
+import necesse.engine.localization.Localization;
+import necesse.engine.network.Packet;
+import necesse.engine.network.PacketWriter;
+import necesse.engine.network.packet.PacketOpenContainer;
+import necesse.engine.network.server.ServerClient;
+import necesse.engine.registries.ContainerRegistry;
 import necesse.engine.registries.ObjectRegistry;
 import necesse.engine.tickManager.TickManager;
 import necesse.entity.mobs.PlayerMob;
@@ -12,19 +19,21 @@ import necesse.gfx.drawables.LevelSortedDrawable;
 import necesse.gfx.drawables.OrderableDrawables;
 import necesse.gfx.drawOptions.texture.TextureDrawOptions;
 import necesse.gfx.gameTexture.GameTexture;
+import necesse.gfx.gameTooltips.ListGameTooltips;
+import necesse.inventory.InventoryItem;
 import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
+import theholyrailmod.container.StationTrackContainer;
 
-public class PoweredRailObject extends MinecartTrackObject {
+public class StationTrackObject extends MinecartTrackObject {
    private String[] railIds = new String[] { "minecarttrack", "poweredrail", "stationtrack" };
 
    protected int objectId;
-
    public GameTexture unpoweredTexture;
    public GameTexture poweredTexture;
 
-   public PoweredRailObject() {
+   public StationTrackObject() {
       this.setItemCategory(new String[] { "wiring" });
       this.stackSize = 50;
       this.showsWire = true;
@@ -39,13 +48,13 @@ public class PoweredRailObject extends MinecartTrackObject {
    @Override
    public void loadTextures() {
       super.loadTextures();
-      this.unpoweredTexture = GameTexture.fromFile("objects/poweredrail_unpowered");
-      this.poweredTexture = GameTexture.fromFile("objects/poweredrail");
+      this.unpoweredTexture = GameTexture.fromFile("objects/stationtrack_unpowered");
+      this.poweredTexture = GameTexture.fromFile("objects/stationtrack");
    }
 
    @Override
    public ObjectEntity getNewObjectEntity(Level level, int x, int y) {
-      return new PoweredRailObjectEntity(level, x, y);
+      return new StationTrackObjectEntity(level, x, y);
    }
 
    @Override
@@ -66,7 +75,7 @@ public class PoweredRailObject extends MinecartTrackObject {
       if (active) {
          ObjectEntity ent = level.entityManager.getObjectEntity(x, y);
          if (ent != null) {
-            ((PoweredRailObjectEntity) ent).isPowered = true;
+            ((StationTrackObjectEntity) ent).isPowered = true;
          }
       }
    }
@@ -79,13 +88,13 @@ public class PoweredRailObject extends MinecartTrackObject {
    // rotation == 2 // down
    // rotation == 3 // left
 
-   public PoweredRailObject.TrackSprite getPoweredRailSprite(Level level, int tileX, int tileY, int rotation) {
+   public StationTrackObject.TrackSprite getStationTrackSprite(Level level, int tileX, int tileY, int rotation) {
       boolean alternateSprite;
       synchronized (this.drawRandom) {
          alternateSprite = this.drawRandom.seeded(this.getTileSeed(tileX, tileY)).nextBoolean();
       }
 
-      PoweredRailObject.TrackSprite out = new PoweredRailObject.TrackSprite();
+      StationTrackObject.TrackSprite out = new StationTrackObject.TrackSprite();
       boolean adjTop = Arrays.stream(this.railIds).anyMatch(level.getObject(tileX, tileY - 1).getStringID()::equals);
       boolean adjRight = Arrays.stream(this.railIds).anyMatch(level.getObject(tileX + 1, tileY).getStringID()::equals);
       boolean adjBot = Arrays.stream(this.railIds).anyMatch(level.getObject(tileX, tileY + 1).getStringID()::equals);
@@ -412,7 +421,7 @@ public class PoweredRailObject extends MinecartTrackObject {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
       DrawOptionsList options = new DrawOptionsList();
-      PoweredRailObject.TrackSprite sprite = this.getPoweredRailSprite(level, tileX, tileY, rotation);
+      StationTrackObject.TrackSprite sprite = this.getStationTrackSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
@@ -453,7 +462,7 @@ public class PoweredRailObject extends MinecartTrackObject {
          GameCamera camera) {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
-      PoweredRailObject.TrackSprite sprite = this.getPoweredRailSprite(level, tileX, tileY, rotation);
+      StationTrackObject.TrackSprite sprite = this.getStationTrackSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
@@ -486,11 +495,41 @@ public class PoweredRailObject extends MinecartTrackObject {
       }
    }
 
-   public static int registerPoweredRail() {
-      PoweredRailObject prObj = new PoweredRailObject();
+   @Override
+   public boolean canInteract(Level level, int x, int y, PlayerMob player) {
+      return true;
+   }
 
-      prObj.objectId = ObjectRegistry.registerObject("poweredrail", prObj, 10, true);
-      return prObj.objectId;
+   @Override
+   public String getInteractTip(Level level, int x, int y, PlayerMob perspective, boolean debug) {
+      return Localization.translate("controls", "usetip");
+   }
+
+   @Override
+   public ListGameTooltips getItemTooltips(InventoryItem item, PlayerMob perspective) {
+      ListGameTooltips tooltips = new ListGameTooltips();
+      tooltips.add(Localization.translate("itemtooltip", "stationtracktip"));
+      return tooltips;
+   }
+
+   @Override
+   public void interact(Level level, int x, int y, PlayerMob player) {
+      if (level.isServerLevel() && player.isServerClient()) {
+         ServerClient client = player.getServerClient();
+
+         int STATION_TRACK_CONTAINER = StationTrackContainer.registryId;
+         StationTrackObjectEntity oe = (StationTrackObjectEntity) level.entityManager.getObjectEntity(x, y);
+         if (oe != null) {
+            oe.openContainer(STATION_TRACK_CONTAINER, client);
+         }
+      }
+   }
+
+   public static int registerStationTrack() {
+      StationTrackObject stObj = new StationTrackObject();
+
+      stObj.objectId = ObjectRegistry.registerObject("stationtrack", stObj, 10, true);
+      return stObj.objectId;
    }
 
    private static class TrackSprite {
@@ -528,7 +567,7 @@ public class PoweredRailObject extends MinecartTrackObject {
          this.connectedLeft = true;
       }
 
-      public PoweredRailObject.TrackSprite sprite(int spriteX, int spriteY) {
+      public StationTrackObject.TrackSprite sprite(int spriteX, int spriteY) {
          this.x = spriteX;
          this.y = spriteY;
          return this;
