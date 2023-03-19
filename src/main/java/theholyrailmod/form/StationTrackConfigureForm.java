@@ -319,6 +319,15 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
         return false;
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        if (this.rangeElement != null) {
+            this.rangeElement.remove();
+        }
+    }
+
     private void syncCheckboxes() {
         this.waitFullCheckbox.checked = this.wait_full;
         this.waitEmptyCheckbox.checked = this.wait_empty;
