@@ -17,13 +17,13 @@ import theholyrailmod.theholyrail.ChestMinecartMountItem;
 @ModEntry
 public class TheHolyRail {
         //// SPECIAL SHOUT-OUTS
-        // Thanks to Snoobinoob for a lot of help getting this mod going.
-        // And special thanks to Fair to making this amazing game!
+        // Thanks to Snoobinoob and Fair for a lot of help getting this mod going.
+        // And another special thanks to Fair to making this amazing game!
         //
         // Anyone interested in modding can't go wrong by joining the Discord.
 
         public void init() {
-                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. V0.4...");
+                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.6.0...");
 
                 RailRunnerMountItem.registerRailRunnerMountItem();
                 ChestMinecartMountItem.registerChestMinecartMountItem();

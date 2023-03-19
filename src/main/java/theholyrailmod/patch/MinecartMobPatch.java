@@ -3,8 +3,6 @@ package theholyrailmod.patch;
 import necesse.engine.modLoader.annotations.ModMethodPatch;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.summon.MinecartMob;
-import necesse.inventory.Inventory;
-import necesse.inventory.InventoryItem;
 import necesse.level.gameObject.GameObject;
 import net.bytebuddy.asm.Advice;
 import theholyrailmod.theholyrail.ChestMinecartMob;
@@ -27,7 +25,6 @@ public class MinecartMobPatch {
             boolean waitSeconds = false;
             boolean waitEmpty = false;
             boolean waitFull = false;
-            boolean roleManual = false;
             boolean roleLoad = false;
             boolean roleUnload = false;
             GameObject trackObject = mobObject.getLevel().getObject(tileX, tileY);
@@ -39,7 +36,6 @@ public class MinecartMobPatch {
                 waitSeconds = stationTrackEntity.getWaitSeconds();
                 waitEmpty = stationTrackEntity.getWaitEmpty();
                 waitFull = stationTrackEntity.getWaitFull();
-                roleManual = stationTrackEntity.getRoleManual();
                 roleLoad = stationTrackEntity.getRoleLoad();
                 roleUnload = stationTrackEntity.getRoleUnload();
             }
@@ -51,9 +47,12 @@ public class MinecartMobPatch {
                 if (trackObject instanceof PoweredRailObject) {
                     if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
                             && rider != null) {
-                        mobObject.minecartSpeed = Math.min(200.0f,
-                                (mobObject.minecartSpeed + 5.7f) * delta / 150.0f
-                                        * mobObject.getAccelerationModifier());
+                        float MAX_SPEED = 200.0f;
+                        float BOOST_SPEED = MAX_SPEED * 4.5f;
+                        mobObject.minecartSpeed = Math.min(MAX_SPEED,
+                                mobObject.minecartSpeed
+                                        + (BOOST_SPEED * delta / 150.0f
+                                                * mobObject.getAccelerationModifier()));
                     } else if (rider == null) {
                         mobObject.minecartSpeed = 0.0f;
                     } else {
@@ -71,9 +70,9 @@ public class MinecartMobPatch {
                         if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
                                 && rider != null) {
                             mobObject.minecartSpeed = Math.min(rrMob.MAX_SPEED,
-                                    (mobObject.minecartSpeed
-                                            + rrMob.BOOST_SPEED) * delta / 150.0f
-                                            * mobObject.getAccelerationModifier());
+                                    mobObject.minecartSpeed
+                                            + (rrMob.BOOST_SPEED * delta / 150.0f
+                                                    * mobObject.getAccelerationModifier()));
                         } else if (rider == null) {
                             mobObject.minecartSpeed = 0.0f;
                         } else {

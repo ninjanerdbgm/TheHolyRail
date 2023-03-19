@@ -15,7 +15,9 @@ gradlew
 gradlew.bat
 settings.gradle
 
-
 # Project specific
 steam_appid.txt
 latest-crash.log
+
+# Other
+*.txt

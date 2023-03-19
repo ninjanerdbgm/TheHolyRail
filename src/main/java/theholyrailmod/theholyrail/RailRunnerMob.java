@@ -40,7 +40,7 @@ public class RailRunnerMob extends MinecartMob {
    protected boolean breakParticleAlternate;
 
    // vars used by the MinecartMobPatch
-   public final float MAX_SPEED = 215.0f;
+   public final float MAX_SPEED = 235.0f;
    public final float BOOST_SPEED = MAX_SPEED * 5;
    // ----------------------------------------------
 
