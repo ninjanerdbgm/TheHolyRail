@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import necesse.engine.localization.Localization;
-import necesse.engine.network.Packet;
-import necesse.engine.network.PacketWriter;
-import necesse.engine.network.packet.PacketOpenContainer;
 import necesse.engine.network.server.ServerClient;
-import necesse.engine.registries.ContainerRegistry;
 import necesse.engine.registries.ObjectRegistry;
 import necesse.engine.tickManager.TickManager;
 import necesse.entity.mobs.PlayerMob;

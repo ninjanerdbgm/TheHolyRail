@@ -1,16 +1,20 @@
 - Another minecart with higher top speed <DONE>
 - Chest minecart <DONE>
-- Allow players to choose whether or not empty minecarts are detected by powered rails (wrench on rail)
 - Add trap minecarts
 
-New in 5.0:
+New in 0.6.0:
 
 New Stuff:
- - Chest minecarts!
+ - Added Chest minecarts
+ - Added Station Tracks
+ - Mod versioning now changed to the following template: 
+    - Necesse Major Version.Holy Rail Major Version.Holy Rail Minor Version.
+    - Major versions of the mod are reserved for additions/overhauls
+    - Minor versions of the mod are for patches.
 
 Bugfix:
- - Fixed a bug that occasionally displayed the incorrect powered rail sprite when placing.
+ - Rebalanced and retooled minecart motion which will fix bugs with client/server sync.
 
 Balancing:
- - Powered Rails can now be crafted at Demonic Workstations
+ - Powered Tracks can now be crafted at Demonic Workstations
 

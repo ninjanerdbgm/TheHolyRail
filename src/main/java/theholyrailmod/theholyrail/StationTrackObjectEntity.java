@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.Random;
 import java.util.function.Predicate;
 
 import necesse.engine.GameTileRange;
@@ -22,7 +21,6 @@ import necesse.entity.objectEntity.interfaces.OEInventory;
 import necesse.inventory.Inventory;
 import necesse.inventory.InventoryItem;
 import necesse.inventory.InventoryRange;
-import necesse.inventory.item.Item;
 import necesse.level.gameObject.GameObject;
 import necesse.level.maps.Level;
 import necesse.level.maps.multiTile.MultiTile;
