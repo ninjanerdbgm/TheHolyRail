@@ -5,6 +5,10 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+#### 0.6.1
+- **Additions**
+    - Added some text to the Station Track configuration form that gives user feedback on current Station Track mode.
+
 #### 0.6.0
 - **Additions**
     - Added Chest Minecarts
