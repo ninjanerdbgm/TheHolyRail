@@ -40,3 +40,6 @@ stationroleunloadtip=Chest Minecarts will deposit items into nearby chests.
 stationwaiterror_tooshort=Wait time must be larger than 0 seconds.
 stationwaiterror_toolong=Wait time must be no more than 180 seconds.
 stationwaiterror_invalid=Please enter a number between 0 and 180.
+stationmode=Current Mode:
+stationmodeeotl=End of the Line
+stationmodemotl=Middle of the Line

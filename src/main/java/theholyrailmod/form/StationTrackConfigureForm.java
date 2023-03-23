@@ -34,7 +34,7 @@ import necesse.level.maps.hudManager.HudDrawElement;
 import theholyrailmod.container.StationTrackContainer;
 
 public abstract class StationTrackConfigureForm extends ContainerFormList<Container> {
-    private Form stationTrackForm = this.addComponent(new Form("stationtrackconfigure", 400, 250));
+    private Form stationTrackForm = this.addComponent(new Form("stationtrackconfigure", 400, 290));
     public FormLocalTextButton acceptButton;
     public FormLocalTextButton saveButton;
     public FormLocalTextButton cancelButton;
@@ -55,6 +55,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
     public FormLocalLabel autoChestLabel_StoreAll;
     public FormLocalLabel autoChestLabel_TakeAll;
     public FormLocalLabel autoChestLabel_None;
+    public FormLocalLabel stationModeTitleLabel;
+    public FormLocalLabel stationModeCurrentLabel;
 
     public LocalMessage errorText;
 
@@ -228,6 +230,28 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
             this.configureFormElements(FromField.ROLEUNLOAD);
         });
         this.roleUnloadCheckbox.checked = this.role_unload;
+
+        this.stationModeTitleLabel = this.stationTrackForm
+                .addComponent(new FormLocalLabel("ui", "stationmode", new FontOptions(14),
+                        FormLocalLabel.ALIGN_LEFT, 15, 200,
+                        this.stationTrackForm.getWidth() - 8));
+
+        int titleEndX = this.stationModeTitleLabel.getBoundingBox().x
+                + this.stationModeTitleLabel.getBoundingBox().width;
+
+        if (cont.stationTrackEntity.isPowered) {
+            this.stationModeCurrentLabel = this.stationTrackForm
+                    .addComponent(new FormLocalLabel("ui", "stationmodeeotl", new FontOptions(14),
+                            FormLocalLabel.ALIGN_LEFT, titleEndX + 10, 200,
+                            this.stationTrackForm.getWidth() - 8));
+            this.stationModeCurrentLabel.setColor(new java.awt.Color(219, 165, 132));
+        } else {
+            this.stationModeCurrentLabel = this.stationTrackForm
+                    .addComponent(new FormLocalLabel("ui", "stationmodemotl", new FontOptions(14),
+                            FormLocalLabel.ALIGN_LEFT, titleEndX + 10, 200,
+                            this.stationTrackForm.getWidth() - 8));
+            this.stationModeCurrentLabel.setColor(new java.awt.Color(111, 201, 150));
+        }
 
         this.saveButton = this.stationTrackForm.addComponent(new FormLocalTextButton("ui", "stationsave",
                 this.stationTrackForm.getWidth() / 6 - 15,

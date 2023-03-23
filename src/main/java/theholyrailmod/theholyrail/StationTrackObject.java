@@ -54,7 +54,14 @@ public class StationTrackObject extends CustomTrackObject {
    }
 
    public boolean isPowered(Level level, int x, int y) {
-      return level.wireManager.isWireActiveAny(x, y);
+      ObjectEntity ent = level.entityManager.getObjectEntity(x, y);
+      if (level.wireManager.isWireActiveAny(x, y)) {
+         ((StationTrackObjectEntity) ent).isPowered = true;
+         return true;
+      } else {
+         ((StationTrackObjectEntity) ent).isPowered = false;
+         return false;
+      }
    }
 
    @Override
