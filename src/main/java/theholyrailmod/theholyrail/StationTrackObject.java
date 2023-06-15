@@ -55,7 +55,7 @@ public class StationTrackObject extends CustomTrackObject {
 
    public boolean isPowered(Level level, int x, int y) {
       ObjectEntity ent = level.entityManager.getObjectEntity(x, y);
-      if (ent != null) {
+      if (ent != null && ent instanceof StationTrackObjectEntity) {
          if (level.wireManager.isWireActiveAny(x, y)) {
             ((StationTrackObjectEntity) ent).isPowered = true;
             return true;
