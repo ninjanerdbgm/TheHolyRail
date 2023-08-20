@@ -28,7 +28,7 @@ import necesse.level.maps.multiTile.MultiTile;
 public class StationTrackObjectEntity extends ObjectEntity {
     private final long TRANSFER_ITEM_COOLDOWN = 75L;
 
-    private static float nearbyInventoryRange = 2.5f;
+    private static int nearbyInventoryRange = 3;
     private LinkedHashSet<Inventory> nearbyInventories = new LinkedHashSet<>();
     private boolean isTransferringItems;
     private long lastItemTransferTime = -1L;

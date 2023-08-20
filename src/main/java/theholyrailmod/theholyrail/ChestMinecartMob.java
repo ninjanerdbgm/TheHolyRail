@@ -41,6 +41,7 @@ import necesse.inventory.lootTable.lootItem.LootItem;
 import necesse.level.gameObject.GameObject;
 import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
+import necesse.level.maps.levelBuffManager.LevelModifiers;
 import necesse.level.maps.light.GameLight;
 import theholyrailmod.container.ChestMinecartContainer;
 
@@ -197,7 +198,8 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       }
 
       MobLootTableDropsEvent dropEvent;
-      ArrayList<InventoryItem> drops = this.getLootTable().getNewList(GameRandom.globalRandom, this);
+      ArrayList<InventoryItem> drops = this.getLootTable().getNewList(GameRandom.globalRandom,
+            this.getLevel().buffManager.getModifier(LevelModifiers.LOOT), this);
       Point publicLootPosition = this.getLootDropsPosition(null);
       GameEvents.triggerEvent(dropEvent = new MobLootTableDropsEvent(this, publicLootPosition, drops));
       if (dropEvent.dropPos != null && dropEvent.drops != null) {

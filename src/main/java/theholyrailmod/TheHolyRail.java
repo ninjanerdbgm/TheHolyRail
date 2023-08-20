@@ -23,7 +23,7 @@ public class TheHolyRail {
         // Anyone interested in modding can't go wrong by joining the Discord.
 
         public void init() {
-                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.6.0...");
+                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.6.4...");
 
                 RailRunnerMountItem.registerRailRunnerMountItem();
                 ChestMinecartMountItem.registerChestMinecartMountItem();
