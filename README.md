@@ -5,6 +5,9 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+#### 0.6.4
+- Added compatibility for Necesse version 0.22
+
 #### 0.6.3
 - **Bugfixes**
     - Fixed a bug that could cause a crash in 0.6.2.
