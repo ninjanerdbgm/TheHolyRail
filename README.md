@@ -5,6 +5,20 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+#### 0.6.5
+- Added compatibility for Necesse version 0.22.1
+
+#### 0.6.4
+- Added compatibility for Necesse version 0.22
+
+#### 0.6.3
+- **Bugfixes**
+    - Fixed a bug that could cause a crash in 0.6.2.
+    
+#### 0.6.2
+- **Bugfixes**
+    - Fixed a null entity error that could occur when powering station tracks.
+    
 #### 0.6.1
 - **Additions**
     - Added some text to the Station Track configuration form that gives user feedback on current Station Track mode.
