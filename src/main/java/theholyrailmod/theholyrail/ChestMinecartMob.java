@@ -48,6 +48,7 @@ import theholyrailmod.container.ChestMinecartContainer;
 public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public static LootTable lootTable = new LootTable(new LootItem("chestminecart"));
    public static GameTexture texture;
+   public static GameTexture openTexture;
    public float collisionMovementBuffer;
    public Point collisionMovementLastPos;
    public float chestMinecartSpeed;
@@ -164,7 +165,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       drawY += getLevel().getTile(getTileX(), getTileY()).getMobSinkingAmount(this);
       final DrawOptions behind = texture.initDraw().sprite(sprite.x, sprite.y, 64).light(light).pos(drawX, drawY);
 
-      DrawOptions drawOptions = this.isOpened ? MobRegistry.Textures.fromFile("chestminecart_open").initDraw()
+      DrawOptions drawOptions = this.isOpened ? openTexture.initDraw()
             .sprite(sprite.x, sprite.y, 64)
             .light(light)
             .pos(drawX, drawY)
@@ -270,7 +271,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
    public void interact(PlayerMob player) {
       Level level = player.getLevel();
 
-      if (level.isServerLevel() && player.isServerClient()) {
+      if (level.isServer() && player.isServerClient()) {
          ServerClient client = player.getServerClient();
          int CHEST_MINECART_CONTAINER = ChestMinecartContainer.registryId;
          PacketOpenContainer p = PacketOpenContainer.Mob(CHEST_MINECART_CONTAINER, this,

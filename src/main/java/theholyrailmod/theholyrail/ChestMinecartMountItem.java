@@ -100,7 +100,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          int seed,
          PacketReader contentReader) {
       if (this.canPlace(level, x, y, player, item, contentReader) == null) {
-         if (level.isServerLevel()) {
+         if (level.isServer()) {
             Mob mob = MobRegistry.getMob("chestminecartmob", level);
             if (mob instanceof ChestMinecartMob) {
                ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
@@ -109,7 +109,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
             }
          }
 
-         if (level.isClientLevel()) {
+         if (level.isClient()) {
             Screen.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
          }
 

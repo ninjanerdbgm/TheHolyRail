@@ -116,7 +116,7 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
          int seed,
          PacketReader contentReader) {
       if (this.canPlace(level, x, y, player, item, contentReader) == null) {
-         if (level.isServerLevel()) {
+         if (level.isServer()) {
             Mob mob = MobRegistry.getMob("railrunnermob", level);
             if (mob instanceof RailRunnerMob) {
                ((RailRunnerMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
@@ -125,7 +125,7 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
             }
          }
 
-         if (level.isClientLevel()) {
+         if (level.isClient()) {
             Screen.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
          }
 

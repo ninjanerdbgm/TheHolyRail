@@ -133,7 +133,7 @@ public class StationTrackObjectEntity extends ObjectEntity {
     }
 
     public void sendUpdatePacket() {
-        if (this.getLevel().isClientLevel()) {
+        if (this.getLevel().isClient()) {
             this.getLevel().getClient().network.sendPacket(new PacketObjectEntity(this));
         }
     }

@@ -38,7 +38,7 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
         super(client, container);
         FormFlow itemFlow = new FormFlow(10);
         header = GameUtils.maxString(header, new FontOptions(20), this.itemForm.getWidth() - 10 - 32);
-        this.itemForm.addComponent(itemFlow.next(new FormLabel(header, new FontOptions(20), -1, 8, 30), 5));
+        this.itemForm.addComponent(itemFlow.nextY(new FormLabel(header, new FontOptions(20), -1, 8, 30), 5));
 
         ChestMinecartContainer cont = (ChestMinecartContainer) container;
         this.slots = new FormContainerSlot[cont.INVENTORY_END - cont.INVENTORY_START + 1];

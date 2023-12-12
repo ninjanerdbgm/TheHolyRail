@@ -176,7 +176,7 @@ public class StationTrackObject extends CustomTrackObject {
 
    @Override
    public void interact(Level level, int x, int y, PlayerMob player) {
-      if (level.isServerLevel() && player.isServerClient()) {
+      if (level.isServer() && player.isServerClient()) {
          ServerClient client = player.getServerClient();
 
          int STATION_TRACK_CONTAINER = StationTrackContainer.registryId;
