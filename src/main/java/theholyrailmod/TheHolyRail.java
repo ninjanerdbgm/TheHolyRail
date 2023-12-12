@@ -38,6 +38,7 @@ public class TheHolyRail {
         public void initResources() {
                 RailRunnerMob.texture = MobRegistry.Textures.fromFile("railrunner");
                 ChestMinecartMob.texture = MobRegistry.Textures.fromFile("chestminecart");
+                ChestMinecartMob.openTexture = MobRegistry.Textures.fromFile("chestminecart_open");
         }
 
         public void postInit() {

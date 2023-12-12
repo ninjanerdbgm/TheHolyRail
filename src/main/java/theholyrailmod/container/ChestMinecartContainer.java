@@ -46,7 +46,7 @@ public class ChestMinecartContainer extends MobContainer {
         this.buttonStoreStackAll = this.registerAction(new EmptyCustomAction() {
             @Override
             protected void run() {
-                if (client.isServerClient()) {
+                if (client.isServer()) {
                     ChestMinecartContainer.this.storeStackAll();
                 }
             }
@@ -55,7 +55,7 @@ public class ChestMinecartContainer extends MobContainer {
         this.buttonTakeTakeAll = this.registerAction(new EmptyCustomAction() {
             @Override
             protected void run() {
-                if (client.isServerClient()) {
+                if (client.isServer()) {
                     ChestMinecartContainer.this.takeTakeAll();
                 }
             }
@@ -64,7 +64,7 @@ public class ChestMinecartContainer extends MobContainer {
         this.buttonSortInventory = this.registerAction(new EmptyCustomAction() {
             @Override
             protected void run() {
-                if (client.isServerClient()) {
+                if (client.isServer()) {
                     ChestMinecartContainer.this.sortInventory();
                 }
             }
@@ -73,7 +73,7 @@ public class ChestMinecartContainer extends MobContainer {
         this.buttonTakeAll = this.registerAction(new EmptyCustomAction() {
             @Override
             protected void run() {
-                if (client.isServerClient()) {
+                if (client.isServer()) {
                     ChestMinecartContainer.this.takeAllItems();
                 }
             }
