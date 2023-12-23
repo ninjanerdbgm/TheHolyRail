@@ -48,7 +48,8 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
             int x = i % 10;
             int y = i / 10;
             this.slots[i] = this.itemForm
-                    .addComponent(new FormContainerSlot(client, slotIndex, 10 + x * 40, 25 + y * 40 + 30));
+                    .addComponent(new FormContainerSlot(client, container, slotIndex, 10 + x * 40,
+                            25 + y * 40 + 30));
         }
 
         this.storageLabel = this.itemForm.addComponent(
