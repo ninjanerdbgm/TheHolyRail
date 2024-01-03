@@ -3,6 +3,8 @@ package theholyrailmod.theholyrail;
 import necesse.engine.Screen;
 import necesse.engine.localization.Localization;
 import necesse.engine.network.PacketReader;
+import necesse.engine.network.packet.PacketMobMount;
+import necesse.engine.network.server.FollowPosition;
 import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ItemRegistry;
 import necesse.engine.registries.MobRegistry;
@@ -11,6 +13,7 @@ import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.PlayerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
 import necesse.entity.mobs.summon.MinecartLines;
+import necesse.entity.mobs.summon.summonFollowingMob.mountFollowingMob.MountFollowingMob;
 import necesse.gfx.GameResources;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.itemAttack.ItemAttackDrawOptions;
@@ -21,6 +24,7 @@ import necesse.inventory.PlayerInventorySlot;
 import necesse.inventory.item.mountItem.MountItem;
 import necesse.level.gameObject.GameObject;
 import necesse.level.gameObject.MinecartTrackObject;
+import necesse.level.gameObject.TrapTrackObject;
 import necesse.level.maps.Level;
 
 public class RailRunnerMountItem extends MountItem implements PlaceableItemInterface {
@@ -51,7 +55,8 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
 
             for (int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
                for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
-                  if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
+                  GameObject object = level.getObject(tileX, tileY);
+                  if (object instanceof MinecartTrackObject && !(object instanceof TrapTrackObject)) {
                      return null;
                   }
                }
@@ -73,9 +78,10 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
 
       for (int tileX = playerTileX - 1; tileX <= playerTileX + 1; ++tileX) {
          for (int tileY = playerTileY - 1; tileY <= playerTileY + 1; ++tileY) {
-            if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
-               MinecartLines lines = ((MinecartTrackObject) level.getObject(tileX, tileY)).getMinecartLines(level,
-                     tileX, tileY, 0.0F, 0.0F, false);
+            GameObject object = level.getObject(tileX, tileY);
+            if (object instanceof MinecartTrackObject && !(object instanceof TrapTrackObject)) {
+               MinecartLines lines = ((MinecartTrackObject) object).getMinecartLines(level, tileX, tileY, 0.0F, 0.0F,
+                     false);
                MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.dir);
                if (pos != null) {
                   float distance = player.getDistance(pos.x, pos.y);
@@ -154,7 +160,7 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
             }
 
             GameObject object = level.getObject(mob.getTileX(), mob.getTileY());
-            if (!(object instanceof MinecartTrackObject)) {
+            if (!(object instanceof MinecartTrackObject) || object instanceof TrapTrackObject) {
                return "nottracks";
             }
          }

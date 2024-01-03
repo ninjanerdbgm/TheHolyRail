@@ -5,6 +5,9 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+#### 0.6.701
+- Fixed a bug that would lock a player in if they attempted to mount/dismount from the Track Torpedo when equipped as a mount and used the mount hotkey.
+
 #### 0.6.7
 - Added compatibility for Necesse version 0.23.1
 
