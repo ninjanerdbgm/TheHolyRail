@@ -7,7 +7,6 @@ import necesse.level.gameObject.GameObject;
 import net.bytebuddy.asm.Advice;
 import theholyrailmod.theholyrail.ChestMinecartMob;
 import theholyrailmod.theholyrail.PoweredRailObject;
-import theholyrailmod.theholyrail.RailRunnerMob;
 import theholyrailmod.theholyrail.StationTrackObject;
 import theholyrailmod.theholyrail.StationTrackObjectEntity;
 
@@ -40,10 +39,9 @@ public class MinecartMobPatch {
                 roleUnload = stationTrackEntity.getRoleUnload();
             }
 
-            RailRunnerMob rrMob = mobObject instanceof RailRunnerMob ? (RailRunnerMob) mobObject : null;
             ChestMinecartMob cmMob = mobObject instanceof ChestMinecartMob ? (ChestMinecartMob) mobObject : null;
 
-            if (!(mobObject instanceof RailRunnerMob) && !(mobObject instanceof ChestMinecartMob)) {
+            if (!(mobObject instanceof ChestMinecartMob)) {
                 if (trackObject instanceof PoweredRailObject) {
                     if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
                             && rider != null) {
@@ -66,21 +64,7 @@ public class MinecartMobPatch {
             } else {
                 // Powered Track
                 if (trackObject instanceof PoweredRailObject) {
-                    if (mobObject instanceof RailRunnerMob) {
-                        if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)
-                                && rider != null) {
-                            mobObject.minecartSpeed = Math.min(rrMob.MAX_SPEED,
-                                    mobObject.minecartSpeed
-                                            + (rrMob.BOOST_SPEED * delta / 150.0f
-                                                    * mobObject.getAccelerationModifier()));
-                        } else if (rider == null) {
-                            mobObject.minecartSpeed = 0.0f;
-                        } else {
-                            mobObject.minecartSpeed = Math.max(0f,
-                                    mobObject.minecartSpeed > 12f ? (mobObject.minecartSpeed / 2.0f) * delta / 250.0f
-                                            : (mobObject.minecartSpeed - 0.1f) * delta / 250.0f);
-                        }
-                    } else if (mobObject instanceof ChestMinecartMob) {
+                    if (mobObject instanceof ChestMinecartMob) {
                         cmMob.setIsBeingStationed(false);
                         if (((PoweredRailObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)) {
                             mobObject.minecartSpeed = Math.min(cmMob.MAX_SPEED,

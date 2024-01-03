@@ -15,20 +15,17 @@ import necesse.entity.mobs.MobDrawable;
 import necesse.entity.mobs.PlayerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
 import necesse.entity.mobs.summon.MinecartLines;
-import necesse.entity.mobs.summon.MinecartMob;
+import necesse.entity.mobs.summon.summonFollowingMob.mountFollowingMob.MinecartMountMob;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.DrawOptions;
 import necesse.gfx.drawables.OrderableDrawables;
 import necesse.gfx.gameTexture.GameTexture;
-import necesse.inventory.lootTable.LootTable;
-import necesse.inventory.lootTable.lootItem.LootItem;
 import necesse.level.gameObject.GameObject;
 import necesse.level.gameObject.MinecartTrackObject;
 import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
 
-public class RailRunnerMob extends MinecartMob {
-   public static LootTable lootTable = new LootTable(new LootItem("railrunner"));
+public class RailRunnerMob extends MinecartMountMob {
    public static GameTexture texture;
    public float collisionMovementBuffer;
    public Point collisionMovementLastPos;
@@ -39,7 +36,7 @@ public class RailRunnerMob extends MinecartMob {
    protected float breakParticleBuffer;
    protected boolean breakParticleAlternate;
 
-   // vars used by the MinecartMobPatch
+   // vars used by the MinecartMountMobPatch
    public final float MAX_SPEED = 265.0f;
    public final float BOOST_SPEED = MAX_SPEED * 5;
    // ----------------------------------------------
@@ -76,11 +73,6 @@ public class RailRunnerMob extends MinecartMob {
       super.applyMovementPacket(reader, isDirect);
       this.railRunnerSpeed = reader.getNextFloat();
       this.railRunnerDir = reader.getNextMaxValue(3);
-   }
-
-   @Override
-   public LootTable getLootTable() {
-      return lootTable;
    }
 
    @Override
