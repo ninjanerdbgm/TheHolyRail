@@ -52,7 +52,19 @@ public class MinecartMobPatch {
                                         + (BOOST_SPEED * delta / 150.0f
                                                 * mobObject.getAccelerationModifier()));
                     } else if (rider == null) {
-                        mobObject.minecartSpeed = 0.0f;
+                        // mobObject.minecartSpeed = 0.0f;
+                        // Originally, if the minecart that hit the powered rail was a standard cart /
+                        // railrunner and it
+                        // was empty, this would just halt the movement of the carts. As of v0.6.712 of
+                        // this mod, the behavior
+                        // is now to give the cart a boost, but a much smaller one than a ridden cart or
+                        // a chest minecart.
+                        float MAX_SPEED = 120.0f;
+                        float BOOST_SPEED = MAX_SPEED * 4.15f;
+                        mobObject.minecartSpeed = Math.min(MAX_SPEED,
+                                mobObject.minecartSpeed
+                                        + (BOOST_SPEED * delta / 160.0f
+                                                * mobObject.getAccelerationModifier()));
                     } else {
                         mobObject.minecartSpeed = Math.min(0f,
                                 mobObject.minecartSpeed > 4f ? (mobObject.minecartSpeed / 2.0f) * delta / 250.0f
