@@ -7,6 +7,7 @@ import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ItemRegistry;
 import necesse.engine.registries.MobRegistry;
 import necesse.engine.sound.SoundEffect;
+import necesse.engine.util.GameBlackboard;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.PlayerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
@@ -30,8 +31,8 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
    }
 
    @Override
-   public ListGameTooltips getTooltips(InventoryItem item, PlayerMob perspective) {
-      ListGameTooltips tooltips = this.getBaseTooltips(item, perspective);
+   public ListGameTooltips getTooltips(InventoryItem item, PlayerMob perspective, GameBlackboard blackboard) {
+      ListGameTooltips tooltips = this.getBaseTooltips(item, perspective, blackboard);
       tooltips.add(Localization.translate("itemtooltip", "chestminecarttip"));
       return tooltips;
    }
