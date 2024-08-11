@@ -19,7 +19,7 @@ import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.engine.save.levelData.InventorySave;
 import necesse.engine.sound.SoundPlayer;
-import necesse.engine.tickManager.TickManager;
+import necesse.engine.gameLoop.tickManager.TickManager;
 import necesse.engine.util.GameRandom;
 import necesse.entity.mobs.Attacker;
 import necesse.entity.mobs.Mob;
@@ -159,7 +159,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       GameLight light = level.getLightLevel(getTileX(), getTileY());
       int drawX = camera.getDrawX(x) - 32;
       int drawY = camera.getDrawY(y) - 51;
-      Point sprite = getAnimSprite(x, y, dir);
+      Point sprite = getAnimSprite(x, y, getDir());
 
       drawY += getBobbing(x, y);
       drawY += getLevel().getTile(getTileX(), getTileY()).getMobSinkingAmount(this);

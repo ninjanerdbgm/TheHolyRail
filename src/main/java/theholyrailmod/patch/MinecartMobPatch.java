@@ -184,22 +184,22 @@ public class MinecartMobPatch {
                                 // If this station track is powered, have the cart make a u-turn. Powered
                                 // station tracks are designed to be placed at the end of a hauling track line.
                                 if (((StationTrackObject) trackObject).isPowered(mobObject.getLevel(), tileX, tileY)) {
-                                    if (mobObject.dir == 3) {
+                                    if (mobObject.getDir() == 3) {
                                         // Set it so the minecart is facing right (dir = 1) and is moving that way
                                         mobObject.setFacingDir(1.0F, 0.0F);
-                                        mobObject.minecartDir = mobObject.dir;
-                                    } else if (mobObject.dir == 2) {
+                                        mobObject.minecartDir = mobObject.getDir();
+                                    } else if (mobObject.getDir() == 2) {
                                         // Set it so the minecart is facing up (dir = 0) and is moving that way
                                         mobObject.setFacingDir(0.0F, -1.0F);
-                                        mobObject.minecartDir = mobObject.dir;
-                                    } else if (mobObject.dir == 1) {
+                                        mobObject.minecartDir = mobObject.getDir();
+                                    } else if (mobObject.getDir() == 1) {
                                         // Set it so the minecart is facing left (dir = 3) and is moving that way
                                         mobObject.setFacingDir(-1.0F, 0.0F);
-                                        mobObject.minecartDir = mobObject.dir;
+                                        mobObject.minecartDir = mobObject.getDir();
                                     } else {
                                         // Set it so the minecart is facing down (dir = 2) and is moving that way
                                         mobObject.setFacingDir(0.0F, 1.0F);
-                                        mobObject.minecartDir = mobObject.dir;
+                                        mobObject.minecartDir = mobObject.getDir();
                                     }
                                 }
                             }

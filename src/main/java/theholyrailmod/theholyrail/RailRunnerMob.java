@@ -9,7 +9,7 @@ import necesse.engine.registries.MobRegistry;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.engine.sound.SoundPlayer;
-import necesse.engine.tickManager.TickManager;
+import necesse.engine.gameLoop.tickManager.TickManager;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.MobDrawable;
 import necesse.entity.mobs.PlayerMob;
@@ -83,7 +83,7 @@ public class RailRunnerMob extends MinecartMountMob {
       GameLight light = level.getLightLevel(getTileX(), getTileY());
       int drawX = camera.getDrawX(x) - 32;
       int drawY = camera.getDrawY(y) - 51;
-      Point sprite = getAnimSprite(x, y, dir);
+      Point sprite = getAnimSprite(x, y, getDir());
 
       drawY += getBobbing(x, y);
       drawY += getLevel().getTile(getTileX(), getTileY()).getMobSinkingAmount(this);
