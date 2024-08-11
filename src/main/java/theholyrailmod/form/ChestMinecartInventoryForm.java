@@ -4,6 +4,7 @@ import necesse.engine.Settings;
 import necesse.engine.localization.message.LocalMessage;
 import necesse.engine.network.client.Client;
 import necesse.engine.util.GameUtils;
+import necesse.engine.window.GameWindow;
 import necesse.gfx.forms.ContainerComponent;
 import necesse.gfx.forms.Form;
 import necesse.gfx.forms.components.FormButton;
@@ -106,8 +107,8 @@ public abstract class ChestMinecartInventoryForm extends ContainerFormList<Conta
     public abstract ChestMinecartMob getMob();
 
     @Override
-    public void onWindowResized() {
-        super.onWindowResized();
+    public void onWindowResized(GameWindow window) {
+        super.onWindowResized(window);
         ContainerComponent.setPosFocus(this.itemForm);
     }
 

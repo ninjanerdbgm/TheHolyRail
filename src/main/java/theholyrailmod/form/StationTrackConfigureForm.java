@@ -5,8 +5,9 @@ import java.util.List;
 import necesse.engine.localization.Localization;
 import necesse.engine.localization.message.LocalMessage;
 import necesse.engine.network.client.Client;
-import necesse.engine.tickManager.TickManager;
+import necesse.engine.gameLoop.tickManager.TickManager;
 import necesse.engine.util.GameUtils;
+import necesse.engine.window.GameWindow;
 import necesse.entity.mobs.PlayerMob;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.texture.SharedTextureDrawOptions;
@@ -335,8 +336,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
     }
 
     @Override
-    public void onWindowResized() {
-        super.onWindowResized();
+    public void onWindowResized(GameWindow window) {
+        super.onWindowResized(window);
         ContainerComponent.setPosFocus(this.stationTrackForm);
     }
 

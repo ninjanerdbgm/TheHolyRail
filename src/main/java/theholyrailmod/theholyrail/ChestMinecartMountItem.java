@@ -1,12 +1,12 @@
 package theholyrailmod.theholyrail;
 
-import necesse.engine.Screen;
 import necesse.engine.localization.Localization;
 import necesse.engine.network.PacketReader;
 import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ItemRegistry;
 import necesse.engine.registries.MobRegistry;
 import necesse.engine.sound.SoundEffect;
+import necesse.engine.sound.SoundManager;
 import necesse.engine.util.GameBlackboard;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.PlayerMob;
@@ -61,7 +61,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
             if (level.getObject(tileX, tileY) instanceof MinecartTrackObject) {
                MinecartLines lines = ((MinecartTrackObject) level.getObject(tileX, tileY)).getMinecartLines(level,
                      tileX, tileY, 0.0F, 0.0F, false);
-               MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.dir);
+               MinecartLinePos pos = lines.getMinecartPos(player.x, player.y, player.getDir());
                if (pos != null) {
                   float distance = player.getDistance(pos.x, pos.y);
                   if (bestPos == null || distance < bestDist) {
@@ -74,7 +74,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
       }
 
       if (bestPos != null) {
-         mount.dir = bestPos.dir;
+         mount.setDir(bestPos.dir);
          ((ChestMinecartMob) mount).minecartDir = bestPos.dir;
          return new java.awt.geom.Point2D.Float(bestPos.x, bestPos.y);
       } else {
@@ -104,14 +104,14 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          if (level.isServer()) {
             Mob mob = MobRegistry.getMob("chestminecartmob", level);
             if (mob instanceof ChestMinecartMob) {
-               ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.dir;
+               ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
                mob.resetUniqueID();
                level.entityManager.addMob(mob, (float) x, (float) y);
             }
          }
 
          if (level.isClient()) {
-            Screen.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
+            SoundManager.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
          }
 
          item.setAmount(item.getAmount() - 1);
@@ -153,7 +153,7 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          PlayerInventorySlot slot) {
       String error = this.canPlace(level, x, y, player, item, null);
       if (error == null) {
-         int placeDir = player.isAttacking ? player.beforeAttackDir : player.dir;
+         int placeDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
          ChestMinecartMob.drawPlacePreview(level, x, y, placeDir, camera);
       }
    }

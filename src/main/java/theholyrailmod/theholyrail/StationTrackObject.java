@@ -5,7 +5,7 @@ import java.util.List;
 import necesse.engine.localization.Localization;
 import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ObjectRegistry;
-import necesse.engine.tickManager.TickManager;
+import necesse.engine.gameLoop.tickManager.TickManager;
 import necesse.entity.mobs.PlayerMob;
 import necesse.entity.objectEntity.ObjectEntity;
 import necesse.gfx.camera.GameCamera;

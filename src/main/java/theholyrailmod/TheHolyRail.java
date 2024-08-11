@@ -23,7 +23,7 @@ public class TheHolyRail {
         // Anyone interested in modding can't go wrong by joining the Discord.
 
         public void init() {
-                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.6.4...");
+                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.7...");
 
                 RailRunnerMountItem.registerRailRunnerMountItem();
                 ChestMinecartMountItem.registerChestMinecartMountItem();
@@ -33,6 +33,8 @@ public class TheHolyRail {
                 ChestMinecartMob.registerChestMinecartMob();
                 PoweredRailObject.registerPoweredRail();
                 StationTrackObject.registerStationTrack();
+
+                System.out.println("Done! Aren't the new graphics fancy?");
         }
 
         public void initResources() {
