@@ -341,8 +341,9 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
       this.filledInventorySlots = totalFilledSlots;
    }
 
-   public void sortItems() {
-      this.itemInventory.sortItems(0, this.itemInventory.getSize() - 1);
+   public void sortItems(PlayerMob playerMob) {
+      this.itemInventory.sortItems(this.getLevel(), playerMob, 0,
+            this.itemInventory.getSize() - 1);
    }
 
    public ChestMinecartMob getMob() {
