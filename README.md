@@ -5,6 +5,10 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+#### 0.7.1
+- Updated to support Necesse version 0.26.1
+- Italian Language support added, thanks to chrisguglia!
+
 #### 0.7
 - Updated to support Necesse version 0.26.0
 

@@ -1,0 +1,45 @@
+[item]
+railrunner=Binario Siluro
+chestminecart=Carrello da Miniera
+
+[itemtooltip]
+railrunnertip=È un carrello da miniera alimentato a razzi!\nPosizionalo su una rotaia per vederlo davvero brillare.
+chestminecarttip=Conserva gli oggetti nella cassa\ne mandali in viaggio!
+stationtracktip=Crea una stazione per Carrelli da Miniera.\nClicca tasto destro dopo averla piazzata per configurarla.
+
+[mob]
+railrunnermob=Binario Siluro
+chestminecartmob=Carrello da Miniera
+
+[object]
+poweredrail=Rotaia Alimentata
+stationtrack=Binario della Stazione
+
+[help]
+stationtrackstationwaittime_help=Imposta il tempo d'attesa del Carrello\nda Miniera in questa stazione.
+
+[ui]
+chestminecartstorage=Carrello da Miniera
+chestminecartsort=Ordina gli Oggetti
+chestminecartstorestackall=Rifornisci le pile di carrelli da miniera dall'inventario
+chestminecarttaketakeall=Rifornisci le pile dell'inventario dal carrello da miniera
+chestminecarttakeallitems=Prendi tutti gli oggetti dal carrello da miniera
+stationtrackheader=Configura Binario della Stazione
+stationtrackstationwaittime=Aspetta alla stazione per X secondi:
+stationtrackstationwaittime_full=Aspetta alla stazione finché il carrello da miniera non è pieno.
+stationtrackstationwaittime_empty=Aspetta alla stazione finché il carrello da miniera non è vuoto.
+stationtrackautochestlabel=Ruolo della Stazione
+stationtrackautochestlabel_unload=Scaricare
+stationtrackautochestlabel_load=Caricare
+stationtrackautochestlabel_manual=Manuale
+stationsave=Salvare
+stationcancel=Cancellare
+stationrolemanualtip=I Carrelli da Miniera non interagiranno con le casse vicine.
+stationroleloadtip=I Carrelli da Miniera prenderanno oggetti dalle casse vicine.
+stationroleunloadtip=I Carrelli da Miniera depositeranno oggetti nelle casse vicine.
+stationwaiterror_tooshort=Il tempo d'attesa deve essere superiore a 0 secondi.
+stationwaiterror_toolong=Il tempo d'attesa non deve essere superiore a 180 secondi.
+stationwaiterror_invalid=Per favore inserisci un numero compreso tra 0 e 180.
+stationmode=Modalità Attuale:
+stationmodeeotl=Fine della Linea
+stationmodemotl=Metà della Linea

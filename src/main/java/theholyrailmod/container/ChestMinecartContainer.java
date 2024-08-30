@@ -65,7 +65,7 @@ public class ChestMinecartContainer extends MobContainer {
             @Override
             protected void run() {
                 if (client.isServer()) {
-                    ChestMinecartContainer.this.sortInventory();
+                    ChestMinecartContainer.this.sortInventory(client.playerMob);
                 }
             }
         });
@@ -191,8 +191,8 @@ public class ChestMinecartContainer extends MobContainer {
         }
     }
 
-    private void sortInventory() {
-        this.minecartMob.sortItems();
+    private void sortInventory(PlayerMob playerMob) {
+        this.minecartMob.sortItems(playerMob);
 
         for (int i = 0; i < this.minecartMob.getInventory().getSize(); ++i) {
             int index = this.addSlot(new ContainerSlot(this.minecartMob.getInventory(), i));
