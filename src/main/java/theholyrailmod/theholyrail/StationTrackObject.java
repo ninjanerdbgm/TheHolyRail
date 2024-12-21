@@ -44,7 +44,7 @@ public class StationTrackObject extends CustomTrackObject {
    }
 
    @Override
-   public void onWireUpdate(Level level, int x, int y, int wireID, boolean active) {
+   public void onWireUpdate(Level level, int layerID, int x, int y, int wireID, boolean active) {
       if (active) {
          ObjectEntity ent = level.entityManager.getObjectEntity(x, y);
          if (ent != null) {
@@ -82,17 +82,19 @@ public class StationTrackObject extends CustomTrackObject {
       GameLight light = level.getLightLevel(tileX, tileY);
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
+      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
       DrawOptionsList options = new DrawOptionsList();
       CustomTrackObject.TrackSprite sprite = this.getCustomSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
-            TextureDrawOptions bridgeOptions = this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light)
+            TextureDrawOptions bridgeOptions = bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light)
                   .pos(drawX, drawY + 8);
             tileList.add(-100, tm -> bridgeOptions.draw());
          }
 
-         options.add(this.supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light).pos(drawX, drawY));
+         options.add(supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).light(light).pos(drawX, drawY));
       }
 
       if (this.isPowered(level, tileX, tileY)) {
@@ -124,14 +126,16 @@ public class StationTrackObject extends CustomTrackObject {
          GameCamera camera) {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
+      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
       CustomTrackObject.TrackSprite sprite = this.getCustomSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
-            this.bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
+                  bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
          }
 
-         this.supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
+         supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
       }
 
       if (this.isPowered(level, tileX, tileY)) {
