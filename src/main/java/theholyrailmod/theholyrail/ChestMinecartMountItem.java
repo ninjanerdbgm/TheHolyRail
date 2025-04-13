@@ -1,7 +1,7 @@
 package theholyrailmod.theholyrail;
 
 import necesse.engine.localization.Localization;
-import necesse.engine.network.PacketReader;
+import necesse.engine.network.gameNetworkData.GNDItemMap;
 import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ItemRegistry;
 import necesse.engine.registries.MobRegistry;
@@ -10,6 +10,8 @@ import necesse.engine.sound.SoundManager;
 import necesse.engine.util.GameBlackboard;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.PlayerMob;
+import necesse.entity.mobs.itemAttacker.ItemAttackSlot;
+import necesse.entity.mobs.itemAttacker.ItemAttackerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
 import necesse.entity.mobs.summon.MinecartLines;
 import necesse.gfx.GameResources;
@@ -93,14 +95,19 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          Level level,
          int x,
          int y,
-         PlayerMob player,
+         ItemAttackerMob attackerMob,
          int attackHeight,
          InventoryItem item,
-         PlayerInventorySlot slot,
+         ItemAttackSlot slot,
          int animAttack,
          int seed,
-         PacketReader contentReader) {
-      if (this.canPlace(level, x, y, player, item, contentReader) == null) {
+         GNDItemMap mapContent) {
+      if (!attackerMob.isPlayer) {
+         return item;
+      }
+
+      PlayerMob player = attackerMob.getFirstPlayerOwner();
+      if (this.canPlace(level, x, y, player, item, mapContent) == null) {
          if (level.isServer()) {
             Mob mob = MobRegistry.getMob("chestminecartmob", level);
             if (mob instanceof ChestMinecartMob) {
@@ -122,12 +129,12 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
    }
 
    @Override
-   public String canAttack(Level level, int x, int y, PlayerMob player, InventoryItem item) {
+   public String canAttack(Level level, int x, int y, ItemAttackerMob attackerMob, InventoryItem item) {
       return null;
    }
 
    protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item,
-         PacketReader contentReader) {
+         GNDItemMap mapContent) {
       if (player.getPositionPoint().distance((double) x, (double) y) > 100.0) {
          return "outofrange";
       } else {

@@ -53,7 +53,7 @@ public class StationTrackObjectEntity extends ObjectEntity {
         this.MAX_STATION_WAIT_TIME = 5200L;
 
         GameObject gObj = this.getLevel().getObject(this.getTileX(), this.getTileY());
-        MultiTile mt = gObj.getMultiTile(this.getLevel(), this.getTileX(), this.getTileY());
+        MultiTile mt = gObj.getMultiTile(level.getObjectRotation(this.getTileX(), this.getTileY()));
         Rectangle rect = mt.getTileRectangle(0, 0);
         this.range = new GameTileRange(nearbyInventoryRange, rect);
 
