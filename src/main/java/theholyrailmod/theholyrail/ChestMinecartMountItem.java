@@ -10,13 +10,13 @@ import necesse.engine.sound.SoundManager;
 import necesse.engine.util.GameBlackboard;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.PlayerMob;
-import necesse.entity.mobs.itemAttacker.ItemAttackSlot;
-import necesse.entity.mobs.itemAttacker.ItemAttackerMob;
 import necesse.entity.mobs.summon.MinecartLinePos;
 import necesse.entity.mobs.summon.MinecartLines;
 import necesse.gfx.GameResources;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.itemAttack.ItemAttackDrawOptions;
+import necesse.entity.mobs.itemAttacker.ItemAttackSlot;
+import necesse.entity.mobs.itemAttacker.ItemAttackerMob;
 import necesse.gfx.gameTooltips.ListGameTooltips;
 import necesse.inventory.InventoryItem;
 import necesse.inventory.PlaceableItemInterface;
@@ -104,32 +104,32 @@ public class ChestMinecartMountItem extends MountItem implements PlaceableItemIn
          GNDItemMap mapContent) {
       if (!attackerMob.isPlayer) {
          return item;
-      }
-
-      PlayerMob player = attackerMob.getFirstPlayerOwner();
-      if (this.canPlace(level, x, y, player, item, mapContent) == null) {
-         if (level.isServer()) {
-            Mob mob = MobRegistry.getMob("chestminecartmob", level);
-            if (mob instanceof ChestMinecartMob) {
-               ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
-               mob.resetUniqueID();
-               level.entityManager.addMob(mob, (float) x, (float) y);
-            }
-         }
-
-         if (level.isClient()) {
-            SoundManager.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
-         }
-
-         item.setAmount(item.getAmount() - 1);
-         return item;
       } else {
-         return item;
+         PlayerMob player = (PlayerMob) attackerMob;
+         if (this.canPlace(level, x, y, player, item, mapContent) == null) {
+            if (level.isServer()) {
+               Mob mob = MobRegistry.getMob("chestminecartmob", level);
+               if (mob instanceof ChestMinecartMob) {
+                  ((ChestMinecartMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
+                  mob.resetUniqueID();
+                  level.entityManager.addMob(mob, (float) x, (float) y);
+               }
+            }
+
+            if (level.isClient()) {
+               SoundManager.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
+            }
+
+            item.setAmount(item.getAmount() - 1);
+            return item;
+         } else {
+            return item;
+         }
       }
    }
 
    @Override
-   public String canAttack(Level level, int x, int y, ItemAttackerMob attackerMob, InventoryItem item) {
+   public String canAttack(Level level, int x, int y, ItemAttackerMob mob, InventoryItem item) {
       return null;
    }
 

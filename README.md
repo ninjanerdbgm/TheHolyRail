@@ -5,6 +5,10 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
+### 0.8.2
+
+- Added support for Necesse 0.33.0
+
 ### 0.8.1
 
 - Added support for Necesse 0.32.0
