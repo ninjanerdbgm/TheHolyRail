@@ -23,7 +23,7 @@ public class TheHolyRail {
         // Anyone interested in modding can't go wrong by joining the Discord.
 
         public void init() {
-                System.out.println("Initializing The Holy Rail mod by kn0wmad1c. v0.7...");
+                System.out.println("Initializing The Holy Rail mod by kn0wmad1c...");
 
                 RailRunnerMountItem.registerRailRunnerMountItem();
                 ChestMinecartMountItem.registerChestMinecartMountItem();
@@ -49,7 +49,7 @@ public class TheHolyRail {
                 Recipes.registerModRecipe(new Recipe(
                                 "poweredrail",
                                 5,
-                                RecipeTechRegistry.DEMONIC,
+                                RecipeTechRegistry.DEMONIC_WORKSTATION,
                                 new Ingredient[] {
                                                 new Ingredient("wire", 5),
                                                 new Ingredient("goldbar", 2),
@@ -60,7 +60,7 @@ public class TheHolyRail {
                 Recipes.registerModRecipe(new Recipe(
                                 "stationtrack",
                                 4,
-                                RecipeTechRegistry.DEMONIC,
+                                RecipeTechRegistry.DEMONIC_WORKSTATION,
                                 new Ingredient[] {
                                                 new Ingredient("wire", 4),
                                                 new Ingredient("tungstenbar", 1),
@@ -82,7 +82,7 @@ public class TheHolyRail {
                 Recipes.registerModRecipe(new Recipe(
                                 "railrunner",
                                 1,
-                                RecipeTechRegistry.DEMONIC,
+                                RecipeTechRegistry.DEMONIC_WORKSTATION,
                                 new Ingredient[] {
                                                 new Ingredient("tungstenbar", 5),
                                                 new Ingredient("goldbar", 3),

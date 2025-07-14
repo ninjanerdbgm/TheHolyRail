@@ -1,7 +1,7 @@
 package theholyrailmod.theholyrail;
 
 import necesse.engine.localization.Localization;
-import necesse.engine.network.PacketReader;
+import necesse.engine.network.gameNetworkData.GNDItemMap;
 import necesse.engine.network.server.ServerClient;
 import necesse.engine.registries.ItemRegistry;
 import necesse.engine.registries.MobRegistry;
@@ -15,6 +15,8 @@ import necesse.entity.mobs.summon.MinecartLines;
 import necesse.gfx.GameResources;
 import necesse.gfx.camera.GameCamera;
 import necesse.gfx.drawOptions.itemAttack.ItemAttackDrawOptions;
+import necesse.entity.mobs.itemAttacker.ItemAttackSlot;
+import necesse.entity.mobs.itemAttacker.ItemAttackerMob;
 import necesse.gfx.gameTooltips.ListGameTooltips;
 import necesse.inventory.InventoryItem;
 import necesse.inventory.PlaceableItemInterface;
@@ -112,41 +114,46 @@ public class RailRunnerMountItem extends MountItem implements PlaceableItemInter
          Level level,
          int x,
          int y,
-         PlayerMob player,
+         ItemAttackerMob attackerMob,
          int attackHeight,
          InventoryItem item,
-         PlayerInventorySlot slot,
+         ItemAttackSlot slot,
          int animAttack,
          int seed,
-         PacketReader contentReader) {
-      if (this.canPlace(level, x, y, player, item, contentReader) == null) {
-         if (level.isServer()) {
-            Mob mob = MobRegistry.getMob("railrunnermob", level);
-            if (mob instanceof RailRunnerMob) {
-               ((RailRunnerMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
-               mob.resetUniqueID();
-               level.entityManager.addMob(mob, (float) x, (float) y);
-            }
-         }
-
-         if (level.isClient()) {
-            SoundManager.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
-         }
-
-         item.setAmount(item.getAmount() - 1);
+         GNDItemMap mapContent) {
+      if (!attackerMob.isPlayer) {
          return item;
       } else {
-         return item;
+         PlayerMob player = (PlayerMob) attackerMob;
+         if (this.canPlace(level, x, y, player, item, mapContent) == null) {
+            if (level.isServer()) {
+               Mob mob = MobRegistry.getMob("railrunnermob", level);
+               if (mob instanceof RailRunnerMob) {
+                  ((RailRunnerMob) mob).minecartDir = player.isAttacking ? player.beforeAttackDir : player.getDir();
+                  mob.resetUniqueID();
+                  level.entityManager.addMob(mob, (float) x, (float) y);
+               }
+            }
+
+            if (level.isClient()) {
+               SoundManager.playSound(GameResources.cling, SoundEffect.effect((float) x, (float) y).volume(0.8F));
+            }
+
+            item.setAmount(item.getAmount() - 1);
+            return item;
+         } else {
+            return item;
+         }
       }
    }
 
    @Override
-   public String canAttack(Level level, int x, int y, PlayerMob player, InventoryItem item) {
+   public String canAttack(Level level, int x, int y, ItemAttackerMob player, InventoryItem item) {
       return null;
    }
 
    protected String canPlace(Level level, int x, int y, PlayerMob player, InventoryItem item,
-         PacketReader contentReader) {
+         GNDItemMap mapContent) {
       if (player.getPositionPoint().distance((double) x, (double) y) > 100.0) {
          return "outofrange";
       } else {
