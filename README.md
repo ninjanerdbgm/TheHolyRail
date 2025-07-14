@@ -5,7 +5,18 @@ The holy gRail of minecart mods!
 
 ## Version Updates
 
-#### 0.8.0
+### 0.8.2
+
+- Added support for Necesse 0.33.0
+
+### 0.8.1
+
+- Added support for Necesse 0.32.0
+- Adjusted deprecations
+- Fixed various style warnings
+
+### 0.8.0
+
 - Added support for Necesse 0.29.0
 - Updated the Italian translation
 
