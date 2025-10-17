@@ -1,7 +1,58 @@
 
 # The Holy Rail
+## The Holy gRail of minecart mods!
 
-The holy gRail of minecart mods!
+The Holy Rail is a minecart improvement mod for Necesse. It adds the following items to the game:
+
+- Powered Tracks - Gives minecarts a boost of speed when powered with wire.
+- The Track Torpedo - A minecart with an overall higher top speed.
+- Chest Minecarts - Store items inside and send them on their way.
+- Station Tracks - Automate Chest Minecart movement all around your settlement and allows Chest Minecarts to automatically interact with nearby chests! This allows you to effectively automate your item movement around your settlement.
+
+
+## Mod Notes
+#### Server Notes
+If you want this mod on your dedicated server, then you must download the jar file located HERE[github.com] and place it in your server's Necesse mods folder. More information can be found here[necessewiki.com].
+
+#### Track Torpedo
+- They are available at Demonic Workstations or higher. You'll need the following materials:
+  - 5 Tungsten Bars
+  - 3 Gold Bars
+  - 1 Firework Dispenser
+- They go roughly 1.7x faster than standard minecarts.
+
+#### Powered Tracks
+- They are available at Demonic Workstations or higher. You'll need the following materials:
+  - 2 Gold Bars
+  - 1 Iron Bar
+  - 1 Wood Log
+  - 5 Wire
+- They require power. If you run over an unpowered Powered Track, you will slow down.
+- Powered Tracks will stop empty minecarts and Track Torpedos, but will always send on Chest Minecarts (if the track is powered).
+- They work with all current forms of power generation (sensors, levers, etc)
+- AFK mob farms are possible! See the [mod's video](https://youtu.be/x6dosWzmnfY) for an example.
+
+#### Chest Minecart
+- They are available at any workstation. You'll need the following materials:
+  - 1 Minecart
+  - 1 Storagebox
+- They are designed to work with both Powered Tracks and Station Tracks.
+- They can hold any item and have 20 slots.
+
+#### Station Tracks
+- They are available at Demonic Workstations or higher. You'll need the following materials:
+  - 1 Tungsten Bar
+  - 1 Iron Bar
+  - 1 Wood Log
+  - 4 Wire
+- They are designed to work only with Chest Minecarts. Any other minecart will treat the station track like a normal track.
+- They are fully configurable. Right-click the Station Track after placing it down to configure it. Want to have Chest Minecarts automatically pull from one nearby chest? Or do you want Chest Minecarts to automatically dump their contents into nearby chests? This is where you configure that.
+- Station Tracks have two modes: Middle Of The Line and End Of The Line
+  - Middle Of The Line mode is set when the Station Track is **UNPOWERED**
+    - This mode will stop a Chest Minecart as you have configured it, and then send it in the direction it was facing when it stopped.
+  - End Of The Line mode is set when the Station Track is **POWERED**
+    - This mode will stop a Chest Minecart as you have configured it, and then it will turn it around and send it back in the direction whence it came.
+    - This mode will be indicated by small yellow stripes along the rail.
 
 ## Version Updates
 
