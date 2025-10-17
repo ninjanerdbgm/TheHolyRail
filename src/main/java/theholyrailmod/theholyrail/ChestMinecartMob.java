@@ -186,7 +186,7 @@ public class ChestMinecartMob extends MinecartMob implements MobInventory {
          }
       });
 
-      addShadowDrawables(tileList, x, y, light, camera);
+      addShadowDrawables(tileList, level, x, y, light, camera);
    }
 
    @Override

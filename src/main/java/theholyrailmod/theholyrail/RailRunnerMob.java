@@ -106,7 +106,7 @@ public class RailRunnerMob extends MinecartMountMob {
          }
       });
 
-      addShadowDrawables(tileList, x, y, light, camera);
+      addShadowDrawables(tileList, level, x, y, light, camera);
    }
 
    public static void drawPlacePreview(Level level, int levelX, int levelY, int dir, GameCamera camera) {

@@ -52,13 +52,13 @@ public class StationTrackObjectEntity extends ObjectEntity {
 
         this.MAX_STATION_WAIT_TIME = 5200L;
 
-        GameObject gObj = this.getLevel().getObject(this.getTileX(), this.getTileY());
-        MultiTile mt = gObj.getMultiTile(this.getLevel(), 0, this.getTileX(), this.getTileY());
+        GameObject gObj = this.getLevel().getObject(this.tileX, this.tileY);
+        MultiTile mt = gObj.getMultiTile(this.getLevel(), 0, this.tileX, this.tileY);
         Rectangle rect = mt.getTileRectangle(0, 0);
         this.range = new GameTileRange(nearbyInventoryRange, rect);
 
         for (InventoryRange inventoryRange : this.findNearbyInventories(
-                level, (int) this.x, (int) this.y, this.range, OEInventory::canUseForNearbyCrafting)) {
+                level, (int) this.tileX, (int) this.tileY, this.range, OEInventory::canUseForNearbyCrafting)) {
             this.nearbyInventories.add(inventoryRange.inventory);
         }
     }
@@ -146,7 +146,8 @@ public class StationTrackObjectEntity extends ObjectEntity {
         this.nearbyInventories.clear();
 
         for (InventoryRange inventoryRange : this.findNearbyInventories(
-                this.getLevel(), (int) this.x, (int) this.y, this.range, OEInventory::canUseForNearbyCrafting)) {
+                this.getLevel(), (int) this.tileX, (int) this.tileY, this.range,
+                OEInventory::canUseForNearbyCrafting)) {
             this.nearbyInventories.add(inventoryRange.inventory);
         }
     }
