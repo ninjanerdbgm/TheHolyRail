@@ -12,7 +12,7 @@ The Holy Rail is a minecart improvement mod for Necesse. It adds the following i
 
 ## Mod Notes
 #### Server Notes
-If you want this mod on your dedicated server, then you must download the jar file located HERE[github.com] and place it in your server's Necesse mods folder. More information can be found here[necessewiki.com].
+If you want this mod on your dedicated server, then you must download the jar file located [HERE](https://github.com) and place it in your server's Necesse mods folder. More information can be found [here](https://necessewiki.com).
 
 #### Track Torpedo
 - They are available at Demonic Workstations or higher. You'll need the following materials:
