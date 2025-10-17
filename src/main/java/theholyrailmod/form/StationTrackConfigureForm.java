@@ -313,8 +313,8 @@ public abstract class StationTrackConfigureForm extends ContainerFormList<Contai
                     final SharedTextureDrawOptions options = cont.stationTrackEntity.range.getDrawOptions(
                             new java.awt.Color(255, 255, 255, 150),
                             new java.awt.Color(255, 255, 255, 50),
-                            (int) cont.stationTrackEntity.x,
-                            (int) cont.stationTrackEntity.y,
+                            (int) cont.stationTrackEntity.tileX,
+                            (int) cont.stationTrackEntity.tileY,
                             camera);
                     if (options != null) {
                         list.add(new SortedDrawable() {
