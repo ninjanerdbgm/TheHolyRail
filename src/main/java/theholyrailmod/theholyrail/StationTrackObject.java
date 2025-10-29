@@ -16,6 +16,7 @@ import necesse.gfx.drawOptions.texture.TextureDrawOptions;
 import necesse.gfx.gameTexture.GameTexture;
 import necesse.gfx.gameTooltips.ListGameTooltips;
 import necesse.inventory.InventoryItem;
+import necesse.level.gameObject.ObjectDamagedTextureArray;
 import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
 import theholyrailmod.container.StationTrackContainer;
@@ -82,8 +83,8 @@ public class StationTrackObject extends CustomTrackObject {
       GameLight light = level.getLightLevel(tileX, tileY);
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
-      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
-      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture bridgeTexture = this.bridgeTexture;
+      GameTexture supportTexture = this.supportTexture;
       DrawOptionsList options = new DrawOptionsList();
       CustomTrackObject.TrackSprite sprite = this.getCustomSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
@@ -126,13 +127,13 @@ public class StationTrackObject extends CustomTrackObject {
          GameCamera camera) {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
-      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
-      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture bridgeTexture = this.bridgeTexture;
+      GameTexture supportTexture = this.supportTexture;
       CustomTrackObject.TrackSprite sprite = this.getCustomSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
-                  bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
+            bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
          }
 
          supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);

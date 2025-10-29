@@ -80,8 +80,8 @@ public class PoweredRailObject extends CustomTrackObject {
          PlayerMob perspective) {
       byte rotation = level.getObjectRotation(tileX, tileY);
       GameLight light = level.getLightLevel(tileX, tileY);
-      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
-      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture bridgeTexture = this.bridgeTexture;
+      GameTexture supportTexture = this.supportTexture;
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
       DrawOptionsList options = new DrawOptionsList();
@@ -126,13 +126,13 @@ public class PoweredRailObject extends CustomTrackObject {
          GameCamera camera) {
       int drawX = camera.getTileDrawX(tileX);
       int drawY = camera.getTileDrawY(tileY);
-      GameTexture bridgeTexture = this.bridgeTexture.getDamagedTexture(this, level, tileX, tileY);
-      GameTexture supportTexture = this.supportTexture.getDamagedTexture(this, level, tileX, tileY);
+      GameTexture bridgeTexture = this.bridgeTexture;
+      GameTexture supportTexture = this.supportTexture;
       CustomTrackObject.TrackSprite sprite = this.getCustomSprite(level, tileX, tileY, rotation);
       if (level.isLiquidTile(tileX, tileY) || level.isShore(tileX, tileY)) {
          if ((level.isLiquidTile(tileX, tileY + 1) || level.isShore(tileX, tileY + 1))
                && (!sprite.connectedDown || sprite.connectedLeft || sprite.connectedRight)) {
-                  bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
+            bridgeTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY + 8);
          }
 
          supportTexture.initDraw().sprite(sprite.x, sprite.y, 32).alpha(alpha).draw(drawX, drawY);
