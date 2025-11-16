@@ -1,0 +1,51 @@
+# Traduction réalisée par Caranud (https://steamcommunity.com/id/Caranud/)
+# Version de mod : 1.0.2 [29/10/25]
+# Version de jeu : 1.0.2 [27/10/25]
+# Date de la dernière traduction : 16/11/2025
+# Note de Caranud : n’hésitez pas à reprendre cette traduction si je ne suis plus actif et disponible depuis un moment ! :) Je suis également sur le serveur Discord (https://discord.com/invite/HSvuUuA).
+
+[item]
+railrunner=Wagonnet à grande vitesse
+chestminecart=Wagon de chargement
+
+[itemtooltip]
+railrunnertip=Ce WGV file à la vitesse de l’éclair, propulsé par des explosifs !\nPlacez-le sur un rail pour le voir en mouvement.
+chestminecarttip=Transporte des objets dans son coffre !\nNécessite des stations de gare automatisées pour fonctionner de manière autonome.
+stationtracktip=Crée une station de déchargement pour le wagon de chargement.\nCliquez avec le bouton droit sur la station après l’avoir placée pour la configurer.
+
+[mob]
+railrunnermob=Wagonnet à grande vitesse
+chestminecartmob=Wagon de chargement
+
+[object]
+poweredrail=Rail électrique
+stationtrack=Station de gare automatisée
+
+[help]
+stationtrackstationwaittime_help=Spécifie le temps (en secondes) que le wagon de chargement stationne à cette station.
+
+[ui]
+chestminecartstorage=Wagon de chargement
+chestminecartsort=Trier les objets du wagon
+chestminecartstorestackall=Empil. rapide vers le wagon
+chestminecarttaketakeall=Réapprovisionner depuis le wagon
+chestminecarttakeallitems=Tout prendre depuis le wagon
+stationtrackheader=Configurer la station de gare
+stationtrackstationwaittime=Attendre à la station pour X secondes :
+stationtrackstationwaittime_full=Attendre à la station jusqu’à ce que le wagon de chargement soit plein
+stationtrackstationwaittime_empty=Attendre à la station jusqu’à ce que le wagon de chargement soit vide
+stationtrackautochestlabel=Rôle de la station
+stationtrackautochestlabel_unload=Décharger
+stationtrackautochestlabel_load=Charger
+stationtrackautochestlabel_manual=Manuel
+stationsave=Sauvegarder
+stationcancel=Annuler
+stationrolemanualtip=Les wagons de chargement n’interagissent pas avec les coffres voisins.
+stationroleloadtip=Les wagons de chargement prennent des objets des coffres voisins.
+stationroleunloadtip=Les wagons de chargement déposent les objets dans les coffres voisins.
+stationwaiterror_tooshort=Le temps d’attente doit être supérieur à 0 secondes.
+stationwaiterror_toolong=Le temps d’attente ne peut dépasser 180 secondes.
+stationwaiterror_invalid=Veuillez entrer un nombre de secondes entre 0 et 180.
+stationmode=Mode activé :
+stationmodeeotl=fin de la ligne (coupé du courant)
+stationmodemotl=milieu de ligne (relié au courant)
