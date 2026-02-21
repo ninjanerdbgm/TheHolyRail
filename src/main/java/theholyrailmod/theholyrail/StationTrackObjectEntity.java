@@ -2,7 +2,10 @@ package theholyrailmod.theholyrail;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.function.Predicate;
 
@@ -184,7 +187,14 @@ public class StationTrackObjectEntity extends ObjectEntity {
 
             GameRandom random = new GameRandom(GameRandom.globalRandom.nextInt());
 
-            ArrayList<Inventory> invArray = new ArrayList<>(this.getNearbyInventories());
+            Collection<Inventory> nearbyInventories = this.getNearbyInventories();
+            ArrayList<Inventory> invArray = new ArrayList<>(
+                    (nearbyInventories != null) ? nearbyInventories : Collections.emptyList());
+
+            if (invArray == null || invArray.isEmpty()) {
+                return;
+            }
+
             Inventory randomInv = invArray.get(random.getIntBetween(0, invArray.size() - 1));
             int invSize = randomInv.getSize();
 
@@ -332,7 +342,7 @@ public class StationTrackObjectEntity extends ObjectEntity {
     @Override
     public void addSaveData(SaveData save) {
         super.addSaveData(save);
-        save.addLong("station_wait_time", this.getMaxStationWaitTime());
+        save.addLong("station_wait_time", this.MAX_STATION_WAIT_TIME);
         save.addBoolean("wait_seconds", this.waitSeconds);
         save.addBoolean("wait_empty", this.waitEmpty);
         save.addBoolean("wait_full", this.waitFull);
@@ -344,25 +354,25 @@ public class StationTrackObjectEntity extends ObjectEntity {
     @Override
     public void applyLoadData(LoadData save) {
         super.applyLoadData(save);
-        this.setMaxStationWaitTime(save.getLong("station_wait_time", 5200L));
-        this.setWaitSeconds(save.getBoolean("wait_seconds", true));
-        this.setWaitEmpty(save.getBoolean("wait_empty", false));
-        this.setWaitFull(save.getBoolean("wait_full", false));
-        this.setRoleManual(save.getBoolean("role_manual", false));
-        this.setRoleLoad(save.getBoolean("role_load", false));
-        this.setRoleUnload(save.getBoolean("role_unload", false));
+        this.setMaxStationWaitTime(save.getLong("station_wait_time", this.MAX_STATION_WAIT_TIME));
+        this.setWaitSeconds(save.getBoolean("wait_seconds", this.waitSeconds));
+        this.setWaitEmpty(save.getBoolean("wait_empty", this.waitEmpty));
+        this.setWaitFull(save.getBoolean("wait_full", this.waitFull));
+        this.setRoleManual(save.getBoolean("role_manual", this.roleManual));
+        this.setRoleLoad(save.getBoolean("role_load", this.roleLoad));
+        this.setRoleUnload(save.getBoolean("role_unload", this.roleUnload));
     }
 
     @Override
     public void setupContentPacket(PacketWriter writer) {
         super.setupContentPacket(writer);
-        writer.putNextLong(this.getMaxStationWaitTime());
-        writer.putNextBoolean(this.getWaitSeconds());
-        writer.putNextBoolean(this.getWaitEmpty());
-        writer.putNextBoolean(this.getWaitFull());
-        writer.putNextBoolean(this.getRoleManual());
-        writer.putNextBoolean(this.getRoleLoad());
-        writer.putNextBoolean(this.getRoleUnload());
+        writer.putNextLong(this.MAX_STATION_WAIT_TIME);
+        writer.putNextBoolean(this.waitSeconds);
+        writer.putNextBoolean(this.waitEmpty);
+        writer.putNextBoolean(this.waitFull);
+        writer.putNextBoolean(this.roleManual);
+        writer.putNextBoolean(this.roleLoad);
+        writer.putNextBoolean(this.roleUnload);
     }
 
     @Override
