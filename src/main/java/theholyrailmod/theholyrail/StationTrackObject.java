@@ -16,7 +16,6 @@ import necesse.gfx.drawOptions.texture.TextureDrawOptions;
 import necesse.gfx.gameTexture.GameTexture;
 import necesse.gfx.gameTooltips.ListGameTooltips;
 import necesse.inventory.InventoryItem;
-import necesse.level.gameObject.ObjectDamagedTextureArray;
 import necesse.level.maps.Level;
 import necesse.level.maps.light.GameLight;
 import theholyrailmod.container.StationTrackContainer;
